@@ -783,6 +783,9 @@ window.delPann=id=>removePann(id).then(()=>toast('Eliminato'));
 
 // ── STATS ────────────────────────────────────────────
 function renderStats(){renderPesoHistory();
+  // define log and tod FIRST
+  const log=logCache,today=new Date().toDateString();
+  const tod=log.filter(e=>new Date(e.startISO).toDateString()===today);
   // tipo breakdown
   const totAll=logCache.length;
   const totPop=logCache.filter(e=>e.tipo==='poppata').length;
@@ -832,8 +835,6 @@ function renderStats(){renderPesoHistory();
       </div>
     </div>`;
 
-  const log=logCache,today=new Date().toDateString();
-  const tod=log.filter(e=>new Date(e.startISO).toDateString()===today);
   const pop=tod.filter(e=>e.tipo==='poppata');
   document.getElementById('statCount').textContent=tod.length;
   document.getElementById('statAvg').textContent=pop.length?Math.round(pop.reduce((a,e)=>a+e.durSec,0)/pop.length/60):'—';
