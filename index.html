@@ -346,7 +346,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 
 <div id="app">
   <header>
-    <div><div class="brand-name" id="appBrandName">Poppapp</div><div class="brand-sub">diario di allattamento</div></div>
+    <div><div class="brand-name" id="appBrandName">Poppapp</div><div class="brand-sub">diario di allattamento <span style="opacity:.5">v0.3.2</span></div></div>
     <div class="hdr-right">
       <div><span class="age-pill" id="agePill">—</span></div>
       <div style="margin-top:4px">oggi <strong id="countToday">0</strong> · ultima <strong id="lastTime">—</strong></div>
@@ -782,84 +782,124 @@ window.delEntry=id=>removeEntry(id);
 window.delPann=id=>removePann(id).then(()=>toast('Eliminato'));
 
 // ── STATS ────────────────────────────────────────────
-function renderStats(){renderPesoHistory();
-  // define log and tod FIRST
-  const log=logCache,today=new Date().toDateString();
-  const tod=log.filter(e=>new Date(e.startISO).toDateString()===today);
-  // tipo breakdown
-  const totAll=logCache.length;
-  const totPop=logCache.filter(e=>e.tipo==='poppata').length;
-  const totCocc=logCache.filter(e=>e.tipo==='coccola').length;
-  const totPopPerc=totAll>0?Math.round(totPop/totAll*100):0;
-  const totCoccPerc=totAll>0?Math.round(totCocc/totAll*100):0;
-  // today breakdown
-  const todAll=tod.length;
-  const todPop=tod.filter(e=>e.tipo==='poppata').length;
-  const todCocc=tod.filter(e=>e.tipo==='coccola').length;
-  const todPopPerc=todAll>0?Math.round(todPop/todAll*100):0;
-  const todCoccPerc=todAll>0?Math.round(todCocc/todAll*100):0;
-  const tipoEl=document.getElementById('tipoBreakdown');
-  if(tipoEl) tipoEl.innerHTML=`
-    <div class="stitle" style="margin-bottom:0">Poppate vs Coccole</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:0">
-      <div class="stat-card">
-        <div class="stat-label">🍼 Poppate oggi</div>
-        <div class="stat-value">${todPop}</div>
-        <div class="stat-unit">${todPopPerc}% del totale</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">🫂 Coccole oggi</div>
-        <div class="stat-value">${todCocc}</div>
-        <div class="stat-unit">${todCoccPerc}% del totale</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">🍼 Poppate totali</div>
-        <div class="stat-value">${totPop}</div>
-        <div class="stat-unit">${totPopPerc}% di tutte</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">🫂 Coccole totali</div>
-        <div class="stat-value">${totCocc}</div>
-        <div class="stat-unit">${totCoccPerc}% di tutte</div>
-      </div>
-    </div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 15px">
-      <div style="display:flex;height:10px;border-radius:6px;overflow:hidden;gap:2px">
-        <div style="background:var(--green);width:${todPopPerc}%;transition:width .5s;border-radius:6px 0 0 6px"></div>
-        <div style="background:rgba(232,184,122,.6);width:${todCoccPerc}%;transition:width .5s;border-radius:0 6px 6px 0"></div>
-      </div>
-      <div style="display:flex;gap:16px;margin-top:8px;font-size:11px;color:var(--muted)">
-        <span><span style="color:var(--green)">■</span> Poppate ${todPopPerc}%</span>
-        <span><span style="color:#e8b87a">■</span> Coccole ${todCoccPerc}%</span>
-        <span style="margin-left:auto">${todAll} totali oggi</span>
-      </div>
-    </div>`;
+function renderStats() {
+  try {
+    // Base data
+    const log      = logCache;
+    const pann     = pannoliniCache;
+    const today    = new Date().toDateString();
+    const todLog   = log.filter(e => new Date(e.startISO).toDateString() === today);
+    const todPann  = pann.filter(p => new Date(p.ts).toDateString() === today);
 
-  const pop=tod.filter(e=>e.tipo==='poppata');
-  document.getElementById('statCount').textContent=tod.length;
-  document.getElementById('statAvg').textContent=pop.length?Math.round(pop.reduce((a,e)=>a+e.durSec,0)/pop.length/60):'—';
-  if(log.length){const diff=(Date.now()-new Date(log[0].end).getTime())/60000;document.getElementById('statLast').textContent=diff<60?`${Math.round(diff)}m`:`${Math.round(diff/60)}h`;}
-  const sC={S:0,D:0,SD:0};tod.forEach(e=>sC[e.seno]++);const ms=Object.entries(sC).sort((a,b)=>b[1]-a[1])[0];document.getElementById('statSeno').textContent=ms[1]>0?senoLabel(ms[0]):'—';
+    // ── Poppate oggi ──────────────────────────────
+    const todPop   = todLog.filter(e => e.tipo === 'poppata');
+    const todCocc  = todLog.filter(e => e.tipo === 'coccola');
+    document.getElementById('statCount').textContent = todLog.length;
+    document.getElementById('statAvg').textContent   = todPop.length
+      ? Math.round(todPop.reduce((a, e) => a + e.durSec, 0) / todPop.length / 60) : '—';
+    if (log.length) {
+      const diff = (Date.now() - new Date(log[0].end).getTime()) / 60000;
+      document.getElementById('statLast').textContent = diff < 60
+        ? Math.round(diff) + 'm' : Math.round(diff / 60) + 'h';
+    }
+    const sC = {S:0, D:0, SD:0};
+    todLog.forEach(e => sC[e.seno]++);
+    const ms = Object.entries(sC).sort((a,b) => b[1]-a[1])[0];
+    document.getElementById('statSeno').textContent = ms[1] > 0 ? senoLabel(ms[0]) : '—';
 
-  // pannolini stats oggi
-  const pp=todayPann();const pipiN=pp.filter(p=>p.tipo==='pipi').length;const caccaN=pp.filter(p=>p.tipo==='cacca').length;
-  const lastCacca=pp.filter(p=>p.tipo==='cacca')[0];
-  const colInfo=lastCacca?COLORI.find(c=>c.id===lastCacca.colore):null;
-  document.getElementById('pannoliniStats').innerHTML=`
-    <div class="ps-row"><span class="ps-label">💧 Pipì oggi</span><span class="ps-val">${pipiN}</span></div>
-    <div class="ps-row"><span class="ps-label">💩 Cacca oggi</span><span class="ps-val">${caccaN}</span></div>
-    ${lastCacca?`<div class="ps-row"><span class="ps-label">Ultima cacca</span><span style="color:var(--text);font-size:12px">${fmtTime(new Date(lastCacca.ts))} · ${lastCacca.quant||''} · ${lastCacca.cons||''}<br>${colInfo?`<span style="display:inline-flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:${colInfo.hex};display:inline-block"></span>${colInfo.label}</span>`:''}</span></div>`:''}`;
+    // ── Pannolini oggi ────────────────────────────
+    const pipiN    = todPann.filter(p => p.tipo === 'pipi').length;
+    const caccaN   = todPann.filter(p => p.tipo === 'cacca').length;
+    const lastCacc = todPann.filter(p => p.tipo === 'cacca')[0];
+    const colInfo  = lastCacc ? (COLORI.find(c => c.id === lastCacc.colore) || null) : null;
+    document.getElementById('pannoliniStats').innerHTML =
+      '<div class="ps-row"><span class="ps-label">💧 Pipì oggi</span><span class="ps-val">' + pipiN + '</span></div>' +
+      '<div class="ps-row"><span class="ps-label">💩 Cacca oggi</span><span class="ps-val">' + caccaN + '</span></div>' +
+      (lastCacc
+        ? '<div class="ps-row"><span class="ps-label">Ultima cacca</span><span style="color:var(--text);font-size:12px">' +
+          fmtTime(new Date(lastCacc.ts)) + ' · ' + (lastCacc.quant||'') + ' · ' + (lastCacc.cons||'') +
+          (colInfo ? '<br><span style="display:inline-flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:' + colInfo.hex + ';display:inline-block"></span>' + colInfo.label + '</span>' : '') +
+          '</span></div>'
+        : '');
 
-  // bar charts
-  const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toDateString();days.push({label:d.toLocaleDateString('it-IT',{weekday:'short'}),pop:log.filter(e=>new Date(e.startISO).toDateString()===ds).length,pipi:pannoliniCache.filter(p=>new Date(p.ts).toDateString()===ds&&p.tipo==='pipi').length,cacca:pannoliniCache.filter(p=>new Date(p.ts).toDateString()===ds&&p.tipo==='cacca').length});}
-  const mxP=Math.max(...days.map(d=>d.pop),1);
-  document.getElementById('weekChart').innerHTML=days.map(d=>`<div class="bar-item"><div class="bar-lbl">${d.label}</div><div class="bar-track"><div class="bar-fill" style="width:${(d.pop/mxP*100).toFixed(0)}%"></div></div><div class="bar-cnt">${d.pop}</div></div>`).join('');
-  const mxPann=Math.max(...days.map(d=>Math.max(d.pipi,d.cacca)),1);
-  document.getElementById('weekPannolini').innerHTML=days.map(d=>`
-    <div class="bar-item"><div class="bar-lbl">${d.label}</div><div style="flex:1;display:flex;flex-direction:column;gap:3px">
-      <div class="bar-track"><div class="bar-fill" style="width:${(d.pipi/mxPann*100).toFixed(0)}%"></div></div>
-      <div class="bar-track"><div class="bar-fill blue" style="width:${(d.cacca/mxPann*100).toFixed(0)}%"></div></div>
-    </div><div style="text-align:right;font-size:10px;color:var(--muted);width:28px">${d.pipi}💧<br>${d.cacca}💩</div></div>`).join('');
+    // ── Poppate vs Coccole ────────────────────────
+    const totAll   = log.length;
+    const totPop   = log.filter(e => e.tipo === 'poppata').length;
+    const totCocc  = log.filter(e => e.tipo === 'coccola').length;
+    const todAll   = todLog.length;
+    const todPopN  = todPop;  // already filtered above? no — use lengths
+    const todCoccN = todCocc;
+    const totPopP  = totAll  > 0 ? Math.round(totPop  / totAll  * 100) : 0;
+    const totCoccP = totAll  > 0 ? Math.round(totCocc / totAll  * 100) : 0;
+    const todPopP  = todAll  > 0 ? Math.round(todLog.filter(e=>e.tipo==='poppata').length / todAll * 100) : 0;
+    const todCoccP = todAll  > 0 ? Math.round(todLog.filter(e=>e.tipo==='coccola').length / todAll * 100) : 0;
+    const todPopCt = todLog.filter(e=>e.tipo==='poppata').length;
+    const todCocCt = todLog.filter(e=>e.tipo==='coccola').length;
+
+    const tipoEl = document.getElementById('tipoBreakdown');
+    if (tipoEl) {
+      tipoEl.innerHTML =
+        '<div class="stitle">Poppate vs Coccole</div>' +
+        '<div class="stats-grid">' +
+          '<div class="stat-card"><div class="stat-label">🍼 Poppate oggi</div><div class="stat-value">' + todPopCt + '</div><div class="stat-unit">' + todPopP + '% del totale</div></div>' +
+          '<div class="stat-card"><div class="stat-label">🫂 Coccole oggi</div><div class="stat-value">' + todCocCt + '</div><div class="stat-unit">' + todCoccP + '% del totale</div></div>' +
+          '<div class="stat-card"><div class="stat-label">🍼 Poppate totali</div><div class="stat-value">' + totPop + '</div><div class="stat-unit">' + totPopP + '% di tutte</div></div>' +
+          '<div class="stat-card"><div class="stat-label">🫂 Coccole totali</div><div class="stat-value">' + totCocc + '</div><div class="stat-unit">' + totCoccP + '% di tutte</div></div>' +
+        '</div>' +
+        '<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 15px">' +
+          '<div style="display:flex;height:10px;border-radius:6px;overflow:hidden;gap:2px">' +
+            '<div style="background:var(--green);width:' + todPopP + '%;border-radius:6px 0 0 6px"></div>' +
+            '<div style="background:rgba(232,184,122,.6);width:' + todCoccP + '%;border-radius:0 6px 6px 0"></div>' +
+          '</div>' +
+          '<div style="display:flex;gap:16px;margin-top:8px;font-size:11px;color:var(--muted)">' +
+            '<span><span style="color:var(--green)">■</span> Poppate ' + todPopP + '%</span>' +
+            '<span><span style="color:#e8b87a">■</span> Coccole ' + todCoccP + '%</span>' +
+            '<span style="margin-left:auto">' + todAll + ' totali oggi</span>' +
+          '</div>' +
+        '</div>';
+    }
+
+    // ── Storico peso ──────────────────────────────
+    renderPesoHistory();
+
+    // ── Grafici 7 giorni ──────────────────────────
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d  = new Date();
+      d.setDate(d.getDate() - i);
+      const ds = d.toDateString();
+      days.push({
+        label: d.toLocaleDateString('it-IT', {weekday:'short'}),
+        pop:   log.filter(e  => new Date(e.startISO).toDateString() === ds).length,
+        pipi:  pann.filter(p => new Date(p.ts).toDateString() === ds && p.tipo === 'pipi').length,
+        cacca: pann.filter(p => new Date(p.ts).toDateString() === ds && p.tipo === 'cacca').length
+      });
+    }
+    const mxP    = Math.max(...days.map(d => d.pop),  1);
+    const mxPann = Math.max(...days.map(d => Math.max(d.pipi, d.cacca)), 1);
+
+    document.getElementById('weekChart').innerHTML = days.map(d =>
+      '<div class="bar-item">' +
+        '<div class="bar-lbl">' + d.label + '</div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + Math.round(d.pop/mxP*100) + '%"></div></div>' +
+        '<div class="bar-cnt">' + d.pop + '</div>' +
+      '</div>'
+    ).join('');
+
+    document.getElementById('weekPannolini').innerHTML = days.map(d =>
+      '<div class="bar-item">' +
+        '<div class="bar-lbl">' + d.label + '</div>' +
+        '<div style="flex:1;display:flex;flex-direction:column;gap:3px">' +
+          '<div class="bar-track"><div class="bar-fill" style="width:' + Math.round(d.pipi/mxPann*100)  + '%"></div></div>' +
+          '<div class="bar-track"><div class="bar-fill" style="width:' + Math.round(d.cacca/mxPann*100) + '%;background:var(--accent2)"></div></div>' +
+        '</div>' +
+        '<div style="text-align:right;font-size:10px;color:var(--muted);width:28px">' + d.pipi + '💧<br>' + d.cacca + '💩</div>' +
+      '</div>'
+    ).join('');
+
+  } catch(err) {
+    console.error('renderStats error:', err);
+  }
 }
 
 // ── PROFILO ──────────────────────────────────────────
