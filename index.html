@@ -120,6 +120,14 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 /* ── MODAL CACCA ───────────────────────────────────── */
 #modalCacca{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:none;align-items:flex-end;justify-content:center;padding-bottom:var(--safe-bot)}
 #modalCacca.open{display:flex}
+/* ── KPI HERO ────────────────────────────────────────── */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;display:flex;flex-direction:column;gap:4px}
+.kpi-card.wide{grid-column:span 2}
+.kpi-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.kpi-value{font-size:42px;font-weight:300;line-height:1;color:var(--text)}
+.kpi-unit{font-size:12px;color:var(--muted)}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:2px}
 /* ── PESO CARD ───────────────────────────────────────── */
 /* ── DISCLAIMER CARD ─────────────────────────────────── */
 
@@ -385,6 +393,14 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
     </div>
     <textarea class="note-field" id="noteField" placeholder="Note opzionali…"></textarea>
     <div id="btnArea"><button class="btn-main btn-start" onclick="startTimer()">▶ &nbsp;Inizia poppata</button></div>
+    <div style="display:flex;gap:16px;justify-content:center;margin-top:-2px">
+      <button onclick="showInfo('poppata')" style="background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;font-family:'DM Mono',monospace;display:flex;align-items:center;gap:5px;padding:4px 0">
+        <span style="width:15px;height:15px;border-radius:50%;border:1px solid var(--muted);display:inline-flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0">i</span>Cos&#39;è una poppata?
+      </button>
+      <button onclick="showInfo('coccola')" style="background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;font-family:'DM Mono',monospace;display:flex;align-items:center;gap:5px;padding:4px 0">
+        <span style="width:15px;height:15px;border-radius:50%;border:1px solid var(--muted);display:inline-flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0">i</span>Cos&#39;è una coccola?
+      </button>
+    </div>
 
     <!-- PANNOLINI CARD -->
     <div class="stitle">Pannolini oggi</div>
@@ -447,22 +463,19 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 
   <!-- STATS -->
   <div class="page" id="page-stats">
-    <div id="tipoBreakdown" style="display:flex;flex-direction:column;gap:10px"></div>
-    <div class="stitle">Poppate oggi</div>
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-label">Poppate</div><div class="stat-value" id="statCount">0</div><div class="stat-unit">oggi</div></div>
-      <div class="stat-card"><div class="stat-label">Durata media</div><div class="stat-value" id="statAvg">—</div><div class="stat-unit">minuti</div></div>
-      <div class="stat-card"><div class="stat-label">Ultima poppata</div><div class="stat-value" id="statLast">—</div><div class="stat-unit">fa</div></div>
-      <div class="stat-card"><div class="stat-label">Seno più usato</div><div class="stat-value" id="statSeno">—</div><div class="stat-unit">oggi</div></div>
-    </div>
-    <div class="stitle">Pannolini oggi</div>
-    <div class="pannolini-stats" id="pannoliniStats"></div>
-    <div class="stitle">Storico peso</div>
-    <div class="peso-history" id="pesoHistory"></div>
-    <div class="stitle">Poppate — ultimi 7 giorni</div>
+    <!-- KPI HERO -->
+    <div class="kpi-grid" id="kpiGrid"></div>
+    <!-- SEZIONI TEMATICHE -->
+    <div class="stitle">📊 Poppate — ultimi 7 giorni</div>
     <div class="bar-row" id="weekChart"></div>
-    <div class="stitle">Pannolini — ultimi 7 giorni</div>
+    <div class="stitle">🍼 Poppate vs Coccole</div>
+    <div id="tipoBreakdown"></div>
+    <div class="stitle">💩 Cronologia colori cacca</div>
+    <div id="caccaColori"></div>
+    <div class="stitle">💩 Pannolini — ultimi 7 giorni</div>
     <div class="bar-row" id="weekPannolini"></div>
+    <div class="stitle">⚖️ Storico peso</div>
+    <div class="peso-history" id="pesoHistory"></div>
     <button class="btn-sec" onclick="exportCSV()">⬇ Esporta CSV</button>
   </div>
 
@@ -784,70 +797,115 @@ window.delPann=id=>removePann(id).then(()=>toast('Eliminato'));
 // ── STATS ────────────────────────────────────────────
 function renderStats() {
   try {
-    // Base data
-    const log      = logCache;
-    const pann     = pannoliniCache;
-    const today    = new Date().toDateString();
-    const todLog   = log.filter(e => new Date(e.startISO).toDateString() === today);
-    const todPann  = pann.filter(p => new Date(p.ts).toDateString() === today);
+    var log    = logCache;
+    var pann   = pannoliniCache;
+    var today  = new Date().toDateString();
+    var todLog = log.filter(function(e){ return new Date(e.startISO).toDateString() === today; });
+    var todPop = todLog.filter(function(e){ return e.tipo === 'poppata'; });
+    var pannOggi = pann.filter(function(p){ return new Date(p.ts).toDateString() === today; });
 
-    // ── Poppate oggi ──────────────────────────────
-    const todPop   = todLog.filter(e => e.tipo === 'poppata');
-    const todCocc  = todLog.filter(e => e.tipo === 'coccola');
-    document.getElementById('statCount').textContent = todLog.length;
-    document.getElementById('statAvg').textContent   = todPop.length
-      ? Math.round(todPop.reduce((a, e) => a + e.durSec, 0) / todPop.length / 60) : '—';
-    if (log.length) {
-      const diff = (Date.now() - new Date(log[0].end).getTime()) / 60000;
-      document.getElementById('statLast').textContent = diff < 60
-        ? Math.round(diff) + 'm' : Math.round(diff / 60) + 'h';
+    // ── KPI HERO ──────────────────────────────────
+    var kpiEl = document.getElementById('kpiGrid');
+    if (kpiEl) {
+      // 1. Poppate oggi
+      var popOggiN = todLog.length;
+      // 2. Ore dall'ultima poppata
+      var oreUltima = '—';
+      if (log.length) {
+        var diffMin = (Date.now() - new Date(log[0].end).getTime()) / 60000;
+        if (diffMin < 60) oreUltima = Math.round(diffMin) + ' min';
+        else oreUltima = (diffMin/60).toFixed(1).replace('.',',') + ' h';
+      }
+      // 3. Durata media poppata (solo poppate, non coccole)
+      var allPop = log.filter(function(e){ return e.tipo === 'poppata'; });
+      var durMedia = allPop.length
+        ? Math.round(allPop.reduce(function(a,e){ return a+e.durSec; },0) / allPop.length / 60) + ' min'
+        : '—';
+      // 4. Ultimo peso
+      var ultimoPeso = pesoCache.length ? pesoCache[0].grammi + ' g' : '—';
+      var ultimoPesoData = pesoCache.length
+        ? 'il ' + new Date(pesoCache[0].data + 'T00:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'short'})
+        : 'nessuna pesata';
+      // 5. Pipi oggi
+      var pipiN = pannOggi.filter(function(p){ return p.tipo === 'pipi'; }).length;
+      // 6. Cacca oggi
+      var caccaN = pannOggi.filter(function(p){ return p.tipo === 'cacca'; }).length;
+
+      kpiEl.innerHTML =
+        '<div class="kpi-card">' +
+          '<div class="kpi-label">Poppate oggi</div>' +
+          '<div class="kpi-value">' + popOggiN + '</div>' +
+          '<div class="kpi-unit">sessioni totali</div>' +
+        '</div>' +
+        '<div class="kpi-card">' +
+          '<div class="kpi-label">Ultima poppata</div>' +
+          '<div class="kpi-value" style="font-size:32px">' + oreUltima + '</div>' +
+          '<div class="kpi-unit">fa</div>' +
+        '</div>' +
+        '<div class="kpi-card">' +
+          '<div class="kpi-label">Durata media</div>' +
+          '<div class="kpi-value" style="font-size:32px">' + durMedia + '</div>' +
+          '<div class="kpi-unit">per poppata (storico)</div>' +
+        '</div>' +
+        '<div class="kpi-card">' +
+          '<div class="kpi-label">Ultimo peso</div>' +
+          '<div class="kpi-value" style="font-size:28px">' + ultimoPeso + '</div>' +
+          '<div class="kpi-unit">' + ultimoPesoData + '</div>' +
+        '</div>' +
+        '<div class="kpi-card">' +
+          '<div class="kpi-label">Pipì oggi</div>' +
+          '<div class="kpi-value">' + pipiN + '</div>' +
+          '<div class="kpi-unit">pannolini bagnati</div>' +
+        '</div>' +
+        '<div class="kpi-card">' +
+          '<div class="kpi-label">Cacca oggi</div>' +
+          '<div class="kpi-value">' + caccaN + '</div>' +
+          '<div class="kpi-unit">pannolini</div>' +
+        '</div>';
     }
-    const sC = {S:0, D:0, SD:0};
-    todLog.forEach(e => sC[e.seno]++);
-    const ms = Object.entries(sC).sort((a,b) => b[1]-a[1])[0];
-    document.getElementById('statSeno').textContent = ms[1] > 0 ? senoLabel(ms[0]) : '—';
 
-    // ── Pannolini oggi ────────────────────────────
-    const pipiN    = todPann.filter(p => p.tipo === 'pipi').length;
-    const caccaN   = todPann.filter(p => p.tipo === 'cacca').length;
-    const lastCacc = todPann.filter(p => p.tipo === 'cacca')[0];
-    const colInfo  = lastCacc ? (COLORI.find(c => c.id === lastCacc.colore) || null) : null;
-    document.getElementById('pannoliniStats').innerHTML =
-      '<div class="ps-row"><span class="ps-label">💧 Pipì oggi</span><span class="ps-val">' + pipiN + '</span></div>' +
-      '<div class="ps-row"><span class="ps-label">💩 Cacca oggi</span><span class="ps-val">' + caccaN + '</span></div>' +
-      (lastCacc
-        ? '<div class="ps-row"><span class="ps-label">Ultima cacca</span><span style="color:var(--text);font-size:12px">' +
-          fmtTime(new Date(lastCacc.ts)) + ' · ' + (lastCacc.quant||'') + ' · ' + (lastCacc.cons||'') +
-          (colInfo ? '<br><span style="display:inline-flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:' + colInfo.hex + ';display:inline-block"></span>' + colInfo.label + '</span>' : '') +
-          '</span></div>'
-        : '');
+    // ── Grafico 7 giorni poppate ───────────────────
+    var days = [];
+    for (var i = 6; i >= 0; i--) {
+      var d = new Date(); d.setDate(d.getDate() - i);
+      var ds = d.toDateString();
+      days.push({
+        label: d.toLocaleDateString('it-IT',{weekday:'short'}),
+        pop:   log.filter(function(e){ return new Date(e.startISO).toDateString() === ds; }).length,
+        pipi:  pann.filter(function(p){ return new Date(p.ts).toDateString() === ds && p.tipo === 'pipi'; }).length,
+        cacca: pann.filter(function(p){ return new Date(p.ts).toDateString() === ds && p.tipo === 'cacca'; }).length
+      });
+    }
+    var mxP = Math.max.apply(null, days.map(function(d){ return d.pop; }).concat([1]));
+    var wcEl = document.getElementById('weekChart');
+    if (wcEl) wcEl.innerHTML = days.map(function(d){
+      return '<div class="bar-item"><div class="bar-lbl">' + d.label + '</div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:' + Math.round(d.pop/mxP*100) + '%"></div></div>' +
+        '<div class="bar-cnt">' + d.pop + '</div></div>';
+    }).join('');
 
-    // ── Poppate vs Coccole ────────────────────────
-    const totAll   = log.length;
-    const totPop   = log.filter(e => e.tipo === 'poppata').length;
-    const totCocc  = log.filter(e => e.tipo === 'coccola').length;
-    const todAll   = todLog.length;
-    const todPopN  = todPop;  // already filtered above? no — use lengths
-    const todCoccN = todCocc;
-    const totPopP  = totAll  > 0 ? Math.round(totPop  / totAll  * 100) : 0;
-    const totCoccP = totAll  > 0 ? Math.round(totCocc / totAll  * 100) : 0;
-    const todPopP  = todAll  > 0 ? Math.round(todLog.filter(e=>e.tipo==='poppata').length / todAll * 100) : 0;
-    const todCoccP = todAll  > 0 ? Math.round(todLog.filter(e=>e.tipo==='coccola').length / todAll * 100) : 0;
-    const todPopCt = todLog.filter(e=>e.tipo==='poppata').length;
-    const todCocCt = todLog.filter(e=>e.tipo==='coccola').length;
-
-    const tipoEl = document.getElementById('tipoBreakdown');
+    // ── Poppate vs Coccole ─────────────────────────
+    var totAll  = log.length;
+    var totPop  = log.filter(function(e){ return e.tipo === 'poppata'; }).length;
+    var totCocc = log.filter(function(e){ return e.tipo === 'coccola'; }).length;
+    var todAll  = todLog.length;
+    var todPopCt  = todPop.length;
+    var todCocCt  = todLog.filter(function(e){ return e.tipo === 'coccola'; }).length;
+    var totPopP   = totAll > 0 ? Math.round(totPop  / totAll * 100) : 0;
+    var totCoccP  = totAll > 0 ? Math.round(totCocc / totAll * 100) : 0;
+    var todPopP   = todAll > 0 ? Math.round(todPopCt / todAll * 100) : 0;
+    var todCoccP  = todAll > 0 ? Math.round(todCocCt / todAll * 100) : 0;
+    var tipoEl = document.getElementById('tipoBreakdown');
     if (tipoEl) {
       tipoEl.innerHTML =
-        '<div class="stitle">Poppate vs Coccole</div>' +
-        '<div class="stats-grid">' +
+        '<div class="stats-grid" style="margin-bottom:10px">' +
           '<div class="stat-card"><div class="stat-label">🍼 Poppate oggi</div><div class="stat-value">' + todPopCt + '</div><div class="stat-unit">' + todPopP + '% del totale</div></div>' +
           '<div class="stat-card"><div class="stat-label">🫂 Coccole oggi</div><div class="stat-value">' + todCocCt + '</div><div class="stat-unit">' + todCoccP + '% del totale</div></div>' +
           '<div class="stat-card"><div class="stat-label">🍼 Poppate totali</div><div class="stat-value">' + totPop + '</div><div class="stat-unit">' + totPopP + '% di tutte</div></div>' +
           '<div class="stat-card"><div class="stat-label">🫂 Coccole totali</div><div class="stat-value">' + totCocc + '</div><div class="stat-unit">' + totCoccP + '% di tutte</div></div>' +
         '</div>' +
         '<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 15px">' +
-          '<div style="display:flex;height:10px;border-radius:6px;overflow:hidden;gap:2px">' +
+          '<div style="display:flex;height:8px;border-radius:6px;overflow:hidden;gap:2px">' +
             '<div style="background:var(--green);width:' + todPopP + '%;border-radius:6px 0 0 6px"></div>' +
             '<div style="background:rgba(232,184,122,.6);width:' + todCoccP + '%;border-radius:0 6px 6px 0"></div>' +
           '</div>' +
@@ -859,43 +917,48 @@ function renderStats() {
         '</div>';
     }
 
-    // ── Storico peso ──────────────────────────────
-    renderPesoHistory();
-
-    // ── Grafici 7 giorni ──────────────────────────
-    const days = [];
-    for (let i = 6; i >= 0; i--) {
-      const d  = new Date();
-      d.setDate(d.getDate() - i);
-      const ds = d.toDateString();
-      days.push({
-        label: d.toLocaleDateString('it-IT', {weekday:'short'}),
-        pop:   log.filter(e  => new Date(e.startISO).toDateString() === ds).length,
-        pipi:  pann.filter(p => new Date(p.ts).toDateString() === ds && p.tipo === 'pipi').length,
-        cacca: pann.filter(p => new Date(p.ts).toDateString() === ds && p.tipo === 'cacca').length
-      });
+    // ── Cronologia colori cacca ────────────────────
+    var ccEl = document.getElementById('caccaColori');
+    if (ccEl) {
+      var caccaAll = pann.filter(function(p){ return p.tipo === 'cacca' && p.colore; });
+      if (!caccaAll.length) {
+        ccEl.innerHTML = '<div class="empty" style="padding:16px 0">Nessuna cacca registrata ancora.</div>';
+      } else {
+        var sorted = caccaAll.slice().sort(function(a,b){ return new Date(b.ts) - new Date(a.ts); });
+        var rows = sorted.map(function(p) {
+          var col = COLORI.find(function(c){ return c.id === p.colore; }) || {hex:'#888',label:p.colore,note:''};
+          var d   = new Date(p.ts);
+          var dateStr = d.toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});
+          var timeStr = fmtTime(d);
+          return '<div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)">' +
+            '<span style="width:14px;height:14px;border-radius:50%;background:' + col.hex + ';flex-shrink:0;border:1px solid rgba(255,255,255,.15)"></span>' +
+            '<div style="flex:1">' +
+              '<div style="font-size:12px;color:var(--text)">' + col.label + '</div>' +
+              '<div style="font-size:10px;color:var(--muted)">' + (col.note||'') + '</div>' +
+            '</div>' +
+            '<div style="text-align:right;font-size:11px;color:var(--muted)">' + dateStr + '<br>' + timeStr + '</div>' +
+          '</div>';
+        });
+        ccEl.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:4px 15px">' + rows.join('') + '</div>';
+      }
     }
-    const mxP    = Math.max(...days.map(d => d.pop),  1);
-    const mxPann = Math.max(...days.map(d => Math.max(d.pipi, d.cacca)), 1);
 
-    document.getElementById('weekChart').innerHTML = days.map(d =>
-      '<div class="bar-item">' +
-        '<div class="bar-lbl">' + d.label + '</div>' +
-        '<div class="bar-track"><div class="bar-fill" style="width:' + Math.round(d.pop/mxP*100) + '%"></div></div>' +
-        '<div class="bar-cnt">' + d.pop + '</div>' +
-      '</div>'
-    ).join('');
-
-    document.getElementById('weekPannolini').innerHTML = days.map(d =>
-      '<div class="bar-item">' +
+    // ── Pannolini 7 giorni ────────────────────────
+    var mxPann = Math.max.apply(null, days.map(function(d){ return Math.max(d.pipi,d.cacca); }).concat([1]));
+    var wpEl = document.getElementById('weekPannolini');
+    if (wpEl) wpEl.innerHTML = days.map(function(d){
+      return '<div class="bar-item">' +
         '<div class="bar-lbl">' + d.label + '</div>' +
         '<div style="flex:1;display:flex;flex-direction:column;gap:3px">' +
           '<div class="bar-track"><div class="bar-fill" style="width:' + Math.round(d.pipi/mxPann*100)  + '%"></div></div>' +
           '<div class="bar-track"><div class="bar-fill" style="width:' + Math.round(d.cacca/mxPann*100) + '%;background:var(--accent2)"></div></div>' +
         '</div>' +
         '<div style="text-align:right;font-size:10px;color:var(--muted);width:28px">' + d.pipi + '💧<br>' + d.cacca + '💩</div>' +
-      '</div>'
-    ).join('');
+      '</div>';
+    }).join('');
+
+    // ── Storico peso ───────────────────────────────
+    renderPesoHistory();
 
   } catch(err) {
     console.error('renderStats error:', err);
