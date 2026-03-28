@@ -122,13 +122,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 #modalCacca.open{display:flex}
 /* ── PESO CARD ───────────────────────────────────────── */
 /* ── DISCLAIMER CARD ─────────────────────────────────── */
-.disclaimer-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;flex-shrink:0}
-.disclaimer-title{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
-.disclaimer-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
-.disclaimer-item:last-child{margin-bottom:0}
-.disclaimer-icon{font-size:18px;flex-shrink:0;margin-top:1px}
-.disclaimer-text{font-size:12px;color:var(--muted);line-height:1.6}
-.disclaimer-text strong{color:var(--text);display:block;margin-bottom:2px;font-size:11px;letter-spacing:.05em}
+
 
 .peso-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
 .peso-left{display:flex;flex-direction:column;gap:3px}
@@ -300,6 +294,13 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
     <button class="modal-cancel" onclick="chiudiModalPeso()">Annulla</button>
   </div>
 </div>
+<div id="modalInfo" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:600;display:none;align-items:flex-end;justify-content:center;padding-bottom:var(--safe-bot)">
+  <div class="modal-sheet" style="gap:12px">
+    <div class="modal-title" id="infoTitle">—</div>
+    <div id="infoBody" style="font-size:13px;color:var(--muted);line-height:1.7"></div>
+    <button class="modal-cancel" onclick="document.getElementById('modalInfo').style.display='none'">Chiudi</button>
+  </div>
+</div>
 <div id="modalCacca">
   <div class="modal-sheet">
     <div class="modal-title">💩 Registra cacca</div>
@@ -346,7 +347,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 
 <div id="app">
   <header>
-    <div><div class="brand-name" id="appBrandName">Poppapp</div><div class="brand-sub">diario di allattamento <span style="opacity:.5">v0.3.2</span></div></div>
+    <div><div style="display:flex;align-items:center;gap:8px"><div class="brand-name" id="appBrandName">Poppapp</div><span style="font-size:10px;letter-spacing:.08em;background:rgba(200,184,162,.15);color:var(--accent);border:1px solid rgba(200,184,162,.3);padding:2px 7px;border-radius:20px;font-family:'DM Mono',monospace">v0.3.2</span></div><div class="brand-sub">diario di allattamento</div></div>
     <div class="hdr-right">
       <div><span class="age-pill" id="agePill">—</span></div>
       <div style="margin-top:4px">oggi <strong id="countToday">0</strong> · ultima <strong id="lastTime">—</strong></div>
@@ -383,23 +384,6 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
       <div class="session-row">Tipo <span id="infoTipo">—</span></div>
     </div>
     <textarea class="note-field" id="noteField" placeholder="Note opzionali…"></textarea>
-    <div class="disclaimer-card">
-      <div class="disclaimer-title">Come distinguere poppata e coccola</div>
-      <div class="disclaimer-item">
-        <div class="disclaimer-icon">🍼</div>
-        <div class="disclaimer-text">
-          <strong>Poppata</strong>
-          Una sessione di allattamento completa in cui il bambino succhia attivamente e con ritmo regolare, svuotando il seno in modo efficace. Di solito avviene a distanza di almeno 1,5–3 ore dall'ultima poppata. Il bambino mostra chiari segnali di fame: schiocchi, mani alla bocca, agitazione crescente.
-        </div>
-      </div>
-      <div class="disclaimer-item">
-        <div class="disclaimer-icon">🫂</div>
-        <div class="disclaimer-text">
-          <strong>Coccola al seno</strong>
-          Una suzione breve e non nutritiva, richiesta pochi minuti dopo la poppata precedente o durante un momento di irrequietezza. Il bambino non ha fame: cerca il seno come fonte di conforto, calore e rassicurazione. Si usa tipicamente lo stesso seno della poppata appena conclusa, e la suzione è lenta, non vigorosa. È fisiologica e normale — non va confusa con fame non soddisfatta.
-        </div>
-      </div>
-    </div>
     <div id="btnArea"><button class="btn-main btn-start" onclick="startTimer()">▶ &nbsp;Inizia poppata</button></div>
 
     <!-- PANNOLINI CARD -->
@@ -720,6 +704,22 @@ function renderPesoHistory(){
     </div>`;
   }).join('');
 }
+
+window.showInfo = function(tipo) {
+  const data = {
+    poppata: {
+      title: '🍼 Poppata',
+      body: 'Una sessione completa in cui il bambino succhia attivamente, svuotando il seno in modo efficace. Avviene dopo almeno 1.5–3 ore dalla sessione precedente. Il bambino mostra chiari segnali di fame: schiocchi, mani alla bocca, agitazione crescente.'
+    },
+    coccola: {
+      title: '🫂 Coccola al seno',
+      body: 'Suzione breve e non nutritiva, richiesta pochi minuti dopo la poppata precedente. Il bambino non ha fame: cerca il seno come fonte di conforto. La suzione è lenta, non vigorosa. Si usa tipicamente lo stesso seno della sessione appena conclusa. È fisiologica e normale.'
+    }
+  };
+  document.getElementById('infoTitle').textContent = data[tipo].title;
+  document.getElementById('infoBody').textContent  = data[tipo].body;
+  document.getElementById('modalInfo').style.display = 'flex';
+};
 window.apriModalPeso=function(){
   const today=new Date().toISOString().slice(0,10);
   document.getElementById('pesoData').value=today;
