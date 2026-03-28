@@ -10,50 +10,68 @@
 <title>Poppapp 🌙</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0f0f14;--surface:#1a1a24;--surface2:#22222f;--border:rgba(255,255,255,0.08);--accent:#c8b8a2;--accent2:#8b9eb5;--text:#f0ece4;--muted:#6b6878;--danger:#e07070;--green:#7eb899;--radius:18px;--safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px)}
+:root{
+  --bg:#0f0f14;--surface:#1a1a24;--surface2:#22222f;
+  --border:rgba(255,255,255,0.08);--accent:#c8b8a2;--accent2:#8b9eb5;
+  --text:#f0ece4;--muted:#6b6878;--danger:#e07070;--green:#7eb899;
+  --radius:18px;
+  --safe-top:env(safe-area-inset-top,0px);--safe-bot:env(safe-area-inset-bottom,0px);
+}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;width:100%;background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;font-size:14px;overflow:hidden}
-#loading{position:fixed;inset:0;background:var(--bg);z-index:300;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
-#loading.hidden{display:none}
-.loading-logo{font-family:'DM Serif Display',serif;font-size:28px}
-.loading-sub{font-size:11px;color:var(--muted);letter-spacing:.1em}
-@keyframes spin{to{transform:rotate(360deg)}}
-.spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
-#onboarding{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;gap:28px;overflow-y:auto}
-#onboarding.hidden{display:none}
-.ob-logo{font-family:'DM Serif Display',serif;font-size:36px;text-align:center;line-height:1.1}
-.ob-logo span{font-size:13px;color:var(--muted);display:block;letter-spacing:.12em;text-transform:uppercase;margin-top:4px}
+#app{display:none;flex-direction:column;height:100%;padding-top:var(--safe-top);padding-bottom:var(--safe-bot)}
+
+/* LOADING */
+#loading{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.loading-logo{font-family:'DM Serif Display',serif;font-size:32px}
+.loading-sub{font-size:11px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+
+/* ONBOARDING */
+#onboarding{position:fixed;inset:0;background:var(--bg);z-index:1000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;gap:24px;padding-top:calc(32px + var(--safe-top));overflow-y:auto}
+.ob-logo{font-family:'DM Serif Display',serif;font-size:34px;text-align:center;line-height:1.1}
+.ob-logo span{display:block;font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:6px;font-family:'DM Mono',monospace}
 .ob-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px}
-.ob-title{font-family:'DM Serif Display',serif;font-size:18px;text-align:center}
+.ob-title{font-family:'DM Serif Display',serif;font-size:20px;text-align:center}
 .ob-sub{font-size:11px;color:var(--muted);text-align:center;letter-spacing:.06em}
-.ob-field{display:flex;flex-direction:column;gap:6px}
-.ob-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.ob-input{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'DM Mono',monospace;font-size:14px;outline:none;width:100%;transition:border-color .2s}
-.ob-input:focus{border-color:rgba(200,184,162,.4)}
-.ob-sesso{display:flex;gap:10px}
-.ob-sesso-btn{flex:1;padding:11px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;cursor:pointer;transition:all .2s;text-align:center}
-.ob-sesso-btn.active{border-color:var(--accent);background:rgba(200,184,162,.1);color:var(--text)}
-.ob-btn{background:var(--accent);color:var(--bg);border:none;border-radius:12px;padding:15px;font-family:'DM Mono',monospace;font-size:14px;font-weight:500;letter-spacing:.06em;cursor:pointer;transition:all .2s;width:100%}
+.fl{display:flex;flex-direction:column;gap:6px}
+.fl-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.fi{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;color:var(--text);font-family:'DM Mono',monospace;font-size:14px;outline:none;width:100%;transition:border-color .2s}
+.fi:focus{border-color:rgba(200,184,162,.4)}
+.fi::placeholder{color:var(--muted)}
+.sex-row{display:flex;gap:10px}
+.sex-btn{flex:1;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;cursor:pointer;transition:all .2s;text-align:center}
+.sex-btn.active{border-color:var(--accent);background:rgba(200,184,162,.1);color:var(--text)}
+.ob-btn{width:100%;padding:15px;border-radius:14px;border:none;background:var(--accent);color:var(--bg);font-family:'DM Mono',monospace;font-size:14px;font-weight:500;cursor:pointer;letter-spacing:.06em}
 .ob-btn:active{transform:scale(.97)}
 .ob-err{font-size:11px;color:var(--danger);text-align:center;min-height:16px}
-#app{display:flex;flex-direction:column;height:100%;padding-top:var(--safe-top);padding-bottom:var(--safe-bot)}
-#app.hidden{display:none}
-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+
+/* HEADER */
+header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px 9px;border-bottom:1px solid var(--border);flex-shrink:0}
 .brand-name{font-family:'DM Serif Display',serif;font-size:20px;line-height:1}
 .brand-sub{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
 .hdr-right{text-align:right;font-size:11px;color:var(--muted);line-height:1.7}
-.hdr-right strong{color:var(--accent);font-size:13px}
+.hdr-right strong{color:var(--accent);font-size:12px}
 .age-pill{display:inline-block;background:rgba(200,184,162,.12);color:var(--accent);border:1px solid rgba(200,184,162,.25);padding:2px 9px;border-radius:20px;font-size:11px;letter-spacing:.05em}
+.sync-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--muted);letter-spacing:.06em}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--muted)}
+.sync-dot.ok{background:var(--green)}
+.sync-dot.syncing{background:var(--accent);animation:pulse 1s infinite}
+
+/* TABS */
 .tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
-.tab{flex:1;padding:9px 0;text-align:center;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);cursor:pointer;border:none;background:none;transition:color .2s}
+.tab{flex:1;padding:9px 0;text-align:center;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);cursor:pointer;border:none;background:none;transition:color .2s}
 .tab.active{color:var(--accent);border-bottom:2px solid var(--accent)}
+
+/* PAGES */
 .page{display:none;flex:1;overflow-y:auto;padding:14px 14px 20px;flex-direction:column;gap:12px}
 .page.active{display:flex}
 .page::-webkit-scrollbar{width:0}
 .stitle{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);padding:0 2px;flex-shrink:0}
-.timer-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 16px 18px;display:flex;flex-direction:column;align-items:center;gap:14px;position:relative;overflow:hidden;flex-shrink:0}
+
+/* TIMER CARD */
+.timer-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 16px 18px;display:flex;flex-direction:column;align-items:center;gap:13px;position:relative;overflow:hidden;flex-shrink:0}
 .timer-card::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(200,184,162,.06) 0%,transparent 70%);pointer-events:none}
-.timer-display{font-size:52px;font-weight:300;letter-spacing:-.02em;line-height:1;transition:color .3s}
+.timer-display{font-size:50px;font-weight:300;letter-spacing:-.02em;line-height:1;transition:color .3s}
 .timer-display.running{color:var(--green)}
 .timer-display.paused{color:var(--accent)}
 .timer-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:-8px}
@@ -62,20 +80,109 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 .seno-btn .icon,.tipo-btn .icon{font-size:15px;display:block;margin-bottom:2px}
 .seno-btn.active{border-color:var(--accent);background:rgba(200,184,162,.1);color:var(--text)}
 .tipo-btn.active{border-color:var(--accent2);background:rgba(139,158,181,.12);color:var(--text)}
-.btn-main{width:100%;padding:15px;border-radius:14px;border:none;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;letter-spacing:.08em;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+
+/* BUTTONS */
+.btn-main{width:100%;padding:14px;border-radius:14px;border:none;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;letter-spacing:.08em;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-start{background:var(--accent);color:var(--bg)}
 .btn-stop{background:var(--danger);color:#fff}
 .btn-pause{background:var(--surface2);color:var(--accent);border:1.5px solid var(--accent)}
 .btn-main:active{transform:scale(.97);opacity:.9}
 .btn-row{display:flex;gap:10px;width:100%}
 .btn-row .btn-main{flex:1}
-.btn-sec{padding:10px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;cursor:pointer;width:100%;text-align:center}
+.btn-sec{padding:10px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.06em;cursor:pointer;width:100%;text-align:center;transition:all .2s}
+.btn-sec:active{opacity:.7}
+
+/* SESSION INFO */
 .session-info{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 15px;display:flex;flex-direction:column;gap:6px;flex-shrink:0}
 .session-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
 .session-row span{color:var(--text)}
 .note-field{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;resize:none;height:54px;outline:none;transition:border-color .2s;flex-shrink:0}
 .note-field:focus{border-color:rgba(200,184,162,.3)}
 .note-field::placeholder{color:var(--muted)}
+
+/* ── PANNOLINI CARD ────────────────────────────────── */
+.pannolini-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;flex-shrink:0}
+.pannolini-header{padding:12px 15px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.pannolini-title{font-family:'DM Serif Display',serif;font-size:15px}
+.pannolini-date{font-size:10px;color:var(--muted);letter-spacing:.08em}
+.pannolini-body{padding:14px 15px;display:flex;gap:12px}
+.pann-col{flex:1;display:flex;flex-direction:column;gap:8px}
+.pann-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:center}
+.pann-counter{display:flex;align-items:center;justify-content:center;gap:10px}
+.pann-count{font-size:32px;font-weight:300;min-width:40px;text-align:center;line-height:1}
+.pann-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:'DM Mono',monospace;line-height:1}
+.pann-btn:active{transform:scale(.9)}
+.pann-btn.plus{border-color:var(--accent);color:var(--accent)}
+.pann-btn.minus{color:var(--muted)}
+.pann-divider{width:1px;background:var(--border);margin:0}
+.pann-log-btn{font-size:10px;text-align:center;color:var(--accent2);letter-spacing:.08em;cursor:pointer;padding:2px 0}
+
+/* ── MODAL CACCA ───────────────────────────────────── */
+#modalCacca{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:none;align-items:flex-end;justify-content:center;padding-bottom:var(--safe-bot)}
+#modalCacca.open{display:flex}
+/* ── PESO CARD ───────────────────────────────────────── */
+/* ── DISCLAIMER CARD ─────────────────────────────────── */
+.disclaimer-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;flex-shrink:0}
+.disclaimer-title{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.disclaimer-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.disclaimer-item:last-child{margin-bottom:0}
+.disclaimer-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.disclaimer-text{font-size:12px;color:var(--muted);line-height:1.6}
+.disclaimer-text strong{color:var(--text);display:block;margin-bottom:2px;font-size:11px;letter-spacing:.05em}
+
+.peso-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
+.peso-left{display:flex;flex-direction:column;gap:3px}
+.peso-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.peso-val{font-size:36px;font-weight:300;line-height:1;color:var(--text)}
+.peso-val span{font-size:14px;color:var(--muted);margin-left:2px}
+.peso-data{font-size:11px;color:var(--muted);margin-top:2px}
+.peso-edit-btn{padding:10px 16px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;white-space:nowrap}
+#modalPeso{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:none;align-items:flex-end;justify-content:center;padding-bottom:var(--safe-bot)}
+#modalPeso.open{display:flex}
+.peso-history{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 15px;display:flex;flex-direction:column;gap:0}
+.peso-hist-item{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:12px}
+.peso-hist-item:last-child{border-bottom:none}
+.peso-hist-left{display:flex;flex-direction:column;gap:2px}
+.peso-hist-g{font-size:18px;font-weight:300;color:var(--text)}
+.peso-hist-date{font-size:10px;color:var(--muted)}
+.peso-hist-right{display:flex;align-items:center;gap:8px}
+.peso-hist-delta{font-size:11px;padding:2px 8px;border-radius:20px}
+.delta-pos{background:rgba(126,184,153,.15);color:var(--green)}
+.delta-neg{background:rgba(224,112,112,.12);color:var(--danger)}
+.peso-hist-del{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer}
+
+.modal-sheet{background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:16px;max-height:85vh;overflow-y:auto}
+.modal-title{font-family:'DM Serif Display',serif;font-size:18px;text-align:center}
+.modal-section{display:flex;flex-direction:column;gap:8px}
+.modal-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* quantità */
+.quant-row{display:flex;gap:8px}
+.quant-btn{flex:1;padding:10px 4px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;transition:all .2s;text-align:center}
+.quant-btn.active{border-color:var(--accent);background:rgba(200,184,162,.1);color:var(--text)}
+
+/* consistenza */
+.cons-row{display:flex;gap:8px}
+.cons-btn{flex:1;padding:10px 4px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;transition:all .2s;text-align:center}
+.cons-btn.active{border-color:var(--accent2);background:rgba(139,158,181,.12);color:var(--text)}
+
+/* palette colori */
+.colori-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.colore-btn{border-radius:12px;border:2px solid transparent;padding:8px 4px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--surface2)}
+.colore-btn.active{border-color:var(--text)}
+.colore-dot{width:28px;height:28px;border-radius:50%}
+.colore-label{font-size:9px;color:var(--muted);text-align:center;letter-spacing:.04em;line-height:1.3}
+.colore-btn.active .colore-label{color:var(--text)}
+
+/* orario */
+.orario-row{display:flex;gap:10px;align-items:center}
+.orario-input{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 14px;color:var(--text);font-family:'DM Mono',monospace;font-size:14px;outline:none;flex:1;color-scheme:dark}
+.modal-note{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;resize:none;height:52px;outline:none;width:100%}
+.modal-note::placeholder{color:var(--muted)}
+.modal-save{width:100%;padding:14px;border-radius:14px;border:none;background:var(--accent);color:var(--bg);font-family:'DM Mono',monospace;font-size:14px;font-weight:500;cursor:pointer}
+.modal-cancel{width:100%;padding:11px;border-radius:14px;border:1.5px solid var(--border);background:none;color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;cursor:pointer}
+
+/* GUIDA PREVIEW */
 .guida-preview{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;flex-shrink:0}
 .gp-header{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-bottom:1px solid var(--border)}
 .gp-title{font-family:'DM Serif Display',serif;font-size:15px}
@@ -86,6 +193,8 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 .gp-chip-text{font-size:12px;color:var(--muted);line-height:1.5}
 .gp-chip-text strong{color:var(--text);display:block;margin-bottom:1px;font-size:10px;letter-spacing:.06em;text-transform:uppercase}
 .gp-more{display:block;text-align:center;padding:9px;font-size:11px;color:var(--accent2);letter-spacing:.08em;border-top:1px solid var(--border);cursor:pointer}
+
+/* GUIDA TAB */
 .week-nav{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:11px 14px;flex-shrink:0}
 .wn-btn{background:none;border:none;color:var(--accent);font-size:22px;cursor:pointer;padding:0 4px;line-height:1}
 .wn-btn:disabled{color:var(--muted)}
@@ -93,8 +202,8 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 .wn-label{font-family:'DM Serif Display',serif;font-size:17px}
 .wn-sub{font-size:10px;color:var(--muted);letter-spacing:.08em;margin-top:2px}
 .g-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
-.g-sec-hdr{display:flex;align-items:center;gap:10px;padding:12px 15px;cursor:pointer}
-.g-sec-hdr.open{border-bottom:1px solid var(--border)}
+.g-sec-hdr{display:flex;align-items:center;gap:10px;padding:12px 15px;cursor:pointer;border-bottom:1px solid transparent}
+.g-sec-hdr.open{border-bottom-color:var(--border)}
 .g-sec-icon{font-size:17px}
 .g-sec-title{font-size:11px;letter-spacing:.08em;text-transform:uppercase;flex:1}
 .g-sec-arrow{color:var(--muted);font-size:13px;transition:transform .2s}
@@ -105,6 +214,8 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 .g-sec-body p:last-child{margin-bottom:0}
 .g-sec-body ul{padding-left:14px;margin-top:6px;display:flex;flex-direction:column;gap:5px}
 .g-sec-body strong{color:var(--text)}
+
+/* LOG */
 .log-list{display:flex;flex-direction:column;gap:9px}
 .log-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:3px 10px}
 .log-main{font-size:13px}
@@ -116,27 +227,39 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 .badge-sd{background:rgba(126,184,153,.15);color:var(--green)}
 .badge-poppata{background:rgba(126,184,153,.12);color:var(--green)}
 .badge-coccola{background:rgba(255,200,150,.12);color:#e8b87a}
+.badge-pipi{background:rgba(255,220,100,.12);color:#d4b84a}
+.badge-cacca{background:rgba(180,130,80,.12);color:#b4824a}
 .log-dur{font-size:17px;font-weight:300;text-align:right;grid-row:span 2;align-self:center}
 .log-del{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;text-align:right}
+
+/* STATS */
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 12px;display:flex;flex-direction:column;gap:3px}
 .stat-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.stat-value{font-size:25px;font-weight:300;line-height:1.1}
+.stat-value{font-size:24px;font-weight:300;line-height:1.1}
 .stat-unit{font-size:11px;color:var(--muted)}
 .bar-row{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px}
 .bar-item{display:flex;align-items:center;gap:10px;font-size:11px}
 .bar-lbl{color:var(--muted);width:26px}
 .bar-track{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
 .bar-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .5s}
+.bar-fill.blue{background:var(--accent2)}
 .bar-cnt{color:var(--text);width:16px;text-align:right}
-.profilo-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:14px}
-.profilo-avatar{font-size:48px;text-align:center}
-.profilo-name{font-family:'DM Serif Display',serif;font-size:22px;text-align:center}
-.profilo-row{display:flex;justify-content:space-between;font-size:12px;padding:10px 0;border-bottom:1px solid var(--border)}
-.profilo-row:last-child{border-bottom:none}
-.profilo-row span{color:var(--muted)}
-.profilo-row strong{color:var(--text)}
-#toast{position:fixed;bottom:calc(68px + var(--safe-bot));left:50%;transform:translateX(-50%) translateY(10px);background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 18px;border-radius:30px;font-size:12px;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:100}
+.pannolini-stats{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 15px;display:flex;flex-direction:column;gap:10px}
+.ps-row{display:flex;align-items:center;justify-content:space-between;font-size:12px}
+.ps-label{color:var(--muted)}
+.ps-val{color:var(--text);font-size:18px;font-weight:300}
+
+/* PROFILO */
+.profile-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:14px}
+.profile-avatar{width:60px;height:60px;border-radius:50%;background:rgba(200,184,162,.1);border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto}
+.profile-name{font-family:'DM Serif Display',serif;font-size:22px;text-align:center}
+.profile-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--border)}
+.profile-row:last-of-type{border-bottom:none}
+.profile-row span{color:var(--text)}
+
+/* TOAST */
+#toast{position:fixed;bottom:calc(68px + var(--safe-bot));left:50%;transform:translateX(-50%) translateY(10px);background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:9px 18px;border-radius:30px;font-size:12px;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:600}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .empty{text-align:center;padding:36px 20px;color:var(--muted);font-size:13px;line-height:1.8}
 .empty .icon{font-size:34px;margin-bottom:12px;display:block}
@@ -145,24 +268,92 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 </style>
 </head>
 <body>
-<div id="loading"><div class="loading-logo">Poppapp 🌙</div><div class="spinner"></div><div class="loading-sub">caricamento…</div></div>
-<div id="onboarding" class="hidden">
-  <div class="ob-logo">Poppapp 🌙<span>registro poppate naturale</span></div>
+
+<div id="loading"><div class="loading-logo">Poppapp 🌙</div><div class="loading-sub">caricamento…</div></div>
+
+<div id="onboarding">
+  <div class="ob-logo">Poppapp 🌙<span>Il tuo diario di allattamento</span></div>
   <div class="ob-card">
-    <div class="ob-title">Benvenuto/a</div>
+    <div class="ob-title">Benvenuto</div>
     <div class="ob-sub">Iniziamo con qualche informazione sul tuo bambino</div>
-    <div class="ob-field"><div class="ob-label">Nome del bambino</div><input class="ob-input" id="obNome" type="text" placeholder="es. Luna" autocomplete="off"></div>
-    <div class="ob-field"><div class="ob-label">Sesso</div><div class="ob-sesso"><button class="ob-sesso-btn active" id="ob-F" onclick="obSesso('F')">👧 Femmina</button><button class="ob-sesso-btn" id="ob-M" onclick="obSesso('M')">👦 Maschio</button></div></div>
-    <div class="ob-field"><div class="ob-label">Data di nascita</div><input class="ob-input" id="obData" type="date"></div>
-    <div class="ob-err" id="obErr"></div>
-    <button class="ob-btn" onclick="saveOnboarding()">Inizia →</button>
+    <div class="fl"><div class="fl-label">Nome del bambino</div><input class="fi" id="ob-nome" type="text" placeholder="es. Luna" autocomplete="off"></div>
+    <div class="fl"><div class="fl-label">Sesso</div><div class="sex-row"><button class="sex-btn" id="sex-f" onclick="setSex('f')">👧 Femmina</button><button class="sex-btn" id="sex-m" onclick="setSex('m')">👦 Maschio</button></div></div>
+    <div class="fl"><div class="fl-label">Data di nascita</div><input class="fi" id="ob-data" type="date" style="color-scheme:dark"></div>
+    <div class="ob-err" id="ob-err"></div>
+    <button class="ob-btn" onclick="salvaOnboarding()">Inizia →</button>
   </div>
 </div>
-<div id="app" class="hidden">
+
+<!-- MODAL CACCA -->
+<div id="modalPeso">
+  <div class="modal-sheet">
+    <div class="modal-title">⚖️ Registra peso</div>
+    <div class="modal-section">
+      <div class="modal-label">Peso (grammi)</div>
+      <input type="number" class="field-input" id="pesoInput" placeholder="es. 3850" inputmode="numeric" min="500" max="20000">
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">Data pesata</div>
+      <input type="date" class="field-input" id="pesoData" style="color-scheme:dark">
+    </div>
+    <button class="modal-save" onclick="salvaPeso()">Salva</button>
+    <button class="modal-cancel" onclick="chiudiModalPeso()">Annulla</button>
+  </div>
+</div>
+<div id="modalCacca">
+  <div class="modal-sheet">
+    <div class="modal-title">💩 Registra cacca</div>
+
+    <div class="modal-section">
+      <div class="modal-label">Orario</div>
+      <div class="orario-row">
+        <input type="time" class="orario-input" id="caccaOrario" style="color-scheme:dark">
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-label">Quantità</div>
+      <div class="quant-row">
+        <button class="quant-btn" id="q-poca" onclick="setQuant('poca')"><span style="font-size:16px">🔹</span><br>Poca</button>
+        <button class="quant-btn" id="q-media" onclick="setQuant('media')"><span style="font-size:16px">🔶</span><br>Media</button>
+        <button class="quant-btn" id="q-tanta" onclick="setQuant('tanta')"><span style="font-size:16px">🔴</span><br>Tanta</button>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-label">Consistenza</div>
+      <div class="cons-row">
+        <button class="cons-btn" id="c-liquida" onclick="setCons('liquida')">💧<br>Liquida</button>
+        <button class="cons-btn" id="c-morbida" onclick="setCons('morbida')">🟡<br>Morbida</button>
+        <button class="cons-btn" id="c-solida" onclick="setCons('solida')">🟤<br>Solida</button>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-label">Colore</div>
+      <div class="colori-grid" id="coloriGrid"></div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-label">Note</div>
+      <textarea class="modal-note" id="caccaNote" placeholder="Osservazioni opzionali…"></textarea>
+    </div>
+
+    <button class="modal-save" onclick="salvaCacca()">Salva</button>
+    <button class="modal-cancel" onclick="chiudiModal()">Annulla</button>
+  </div>
+</div>
+
+<div id="app">
   <header>
-    <div><div class="brand-name" id="headerName">Poppapp 🌙</div><div class="brand-sub">registro poppate</div></div>
-    <div class="hdr-right"><div><span class="age-pill" id="agePill">—</span></div><div style="margin-top:5px">oggi <strong id="countToday">0</strong> · ultima <strong id="lastTime">—</strong></div></div>
+    <div><div class="brand-name" id="appBrandName">Poppapp</div><div class="brand-sub">diario di allattamento</div></div>
+    <div class="hdr-right">
+      <div><span class="age-pill" id="agePill">—</span></div>
+      <div style="margin-top:4px">oggi <strong id="countToday">0</strong> · ultima <strong id="lastTime">—</strong></div>
+      <div style="margin-top:2px"><span class="sync-badge"><span class="sync-dot" id="syncDot"></span><span id="syncLabel">—</span></span></div>
+    </div>
   </header>
+
   <div class="tabs">
     <button class="tab active" onclick="showPage('timer')">⏱ Timer</button>
     <button class="tab" onclick="showPage('guida')">🌿 Guida</button>
@@ -170,10 +361,12 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
     <button class="tab" onclick="showPage('stats')">📊 Stats</button>
     <button class="tab" onclick="showPage('profilo')">👤 Profilo</button>
   </div>
+
+  <!-- TIMER -->
   <div class="page active" id="page-timer">
     <div class="timer-card">
       <div class="timer-display" id="timerDisplay">00:00</div>
-      <div class="timer-label" id="timerLabel">pronto per iniziare</div>
+      <div class="timer-label" id="timerLabel">pronta per iniziare</div>
       <div class="seno-row">
         <button class="seno-btn active" id="btn-S" onclick="setSeno('S')"><span class="icon">◀</span>Sinistro</button>
         <button class="seno-btn" id="btn-D" onclick="setSeno('D')"><span class="icon">▶</span>Destro</button>
@@ -190,10 +383,69 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
       <div class="session-row">Tipo <span id="infoTipo">—</span></div>
     </div>
     <textarea class="note-field" id="noteField" placeholder="Note opzionali…"></textarea>
+    <div class="disclaimer-card">
+      <div class="disclaimer-title">Come distinguere poppata e coccola</div>
+      <div class="disclaimer-item">
+        <div class="disclaimer-icon">🍼</div>
+        <div class="disclaimer-text">
+          <strong>Poppata</strong>
+          Una sessione di allattamento completa in cui il bambino succhia attivamente e con ritmo regolare, svuotando il seno in modo efficace. Di solito avviene a distanza di almeno 1,5–3 ore dall'ultima poppata. Il bambino mostra chiari segnali di fame: schiocchi, mani alla bocca, agitazione crescente.
+        </div>
+      </div>
+      <div class="disclaimer-item">
+        <div class="disclaimer-icon">🫂</div>
+        <div class="disclaimer-text">
+          <strong>Coccola al seno</strong>
+          Una suzione breve e non nutritiva, richiesta pochi minuti dopo la poppata precedente o durante un momento di irrequietezza. Il bambino non ha fame: cerca il seno come fonte di conforto, calore e rassicurazione. Si usa tipicamente lo stesso seno della poppata appena conclusa, e la suzione è lenta, non vigorosa. È fisiologica e normale — non va confusa con fame non soddisfatta.
+        </div>
+      </div>
+    </div>
     <div id="btnArea"><button class="btn-main btn-start" onclick="startTimer()">▶ &nbsp;Inizia poppata</button></div>
+
+    <!-- PANNOLINI CARD -->
+    <div class="stitle">Pannolini oggi</div>
+    <div class="pannolini-card">
+      <div class="pannolini-header">
+        <div class="pannolini-title">Pannolini</div>
+        <div class="pannolini-date" id="pannoliniDate">oggi</div>
+      </div>
+      <div class="pannolini-body">
+        <div class="pann-col">
+          <div class="pann-label">💧 Pipì</div>
+          <div class="pann-counter">
+            <button class="pann-btn minus" onclick="addPipi(-1)">−</button>
+            <div class="pann-count" id="pipiCount">0</div>
+            <button class="pann-btn plus" onclick="addPipi(1)">+</button>
+          </div>
+          <div class="pann-log-btn" onclick="addPipi(1)">registra ora</div>
+        </div>
+        <div class="pann-divider"></div>
+        <div class="pann-col">
+          <div class="pann-label">💩 Cacca</div>
+          <div class="pann-counter">
+            <button class="pann-btn minus" onclick="removeCacca()">−</button>
+            <div class="pann-count" id="caccaCount">0</div>
+            <button class="pann-btn plus" onclick="apriModalCacca()">+</button>
+          </div>
+          <div class="pann-log-btn" onclick="apriModalCacca()">aggiungi dettagli</div>
+        </div>
+      </div>
+    </div>
+
     <div class="stitle">Questa settimana</div>
+    <div class="stitle">Peso</div>
+    <div class="peso-card">
+      <div class="peso-left">
+        <div class="peso-label">Ultimo peso rilevato</div>
+        <div class="peso-val" id="pesoDisplay">— <span>g</span></div>
+        <div class="peso-data" id="pesoDataDisplay">nessuna pesata registrata</div>
+      </div>
+      <button class="peso-edit-btn" onclick="apriModalPeso()">⚖️ Aggiorna</button>
+    </div>
     <div id="guidaPreview"></div>
   </div>
+
+  <!-- GUIDA -->
   <div class="page" id="page-guida">
     <div class="week-nav">
       <button class="wn-btn" id="navPrev" onclick="changeWeek(-1)">‹</button>
@@ -202,111 +454,444 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
     </div>
     <div id="guidaSections" style="display:flex;flex-direction:column;gap:10px"></div>
   </div>
-  <div class="page" id="page-log"><div class="stitle">Registro completo</div><div class="log-list" id="logList"></div></div>
+
+  <!-- LOG -->
+  <div class="page" id="page-log">
+    <div class="stitle">Registro completo</div>
+    <div class="log-list" id="logList"></div>
+  </div>
+
+  <!-- STATS -->
   <div class="page" id="page-stats">
-    <div class="stitle">Oggi</div>
+    <div class="stitle">Poppate oggi</div>
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-label">Poppate</div><div class="stat-value" id="statCount">0</div><div class="stat-unit">oggi</div></div>
       <div class="stat-card"><div class="stat-label">Durata media</div><div class="stat-value" id="statAvg">—</div><div class="stat-unit">minuti</div></div>
       <div class="stat-card"><div class="stat-label">Ultima poppata</div><div class="stat-value" id="statLast">—</div><div class="stat-unit">fa</div></div>
       <div class="stat-card"><div class="stat-label">Seno più usato</div><div class="stat-value" id="statSeno">—</div><div class="stat-unit">oggi</div></div>
     </div>
-    <div class="stitle">Ultimi 7 giorni</div>
+    <div class="stitle">Pannolini oggi</div>
+    <div class="pannolini-stats" id="pannoliniStats"></div>
+    <div class="stitle">Poppate — ultimi 7 giorni</div>
     <div class="bar-row" id="weekChart"></div>
+    <div class="stitle">Pannolini — ultimi 7 giorni</div>
+    <div class="bar-row" id="weekPannolini"></div>
     <button class="btn-sec" onclick="exportCSV()">⬇ Esporta CSV</button>
   </div>
+
+  <!-- PROFILO -->
   <div class="page" id="page-profilo">
-    <div class="profilo-card" id="profiloCard"></div>
-    <button class="btn-sec" style="color:var(--danger);border-color:rgba(224,112,112,.3)" onclick="resetProfilo()">🔄 Cambia bambino / ricomincia</button>
+    <div class="stitle">Il tuo bambino</div>
+    <div class="profile-card" id="profileCard"></div>
+    <div class="stitle">Impostazioni</div>
+    <button class="btn-sec" onclick="resetProfilo()">✏️ Modifica profilo</button>
+    <button class="btn-sec" style="color:var(--danger);border-color:rgba(224,112,112,.3)" onclick="clearAll()">🗑 Cancella tutti i dati</button>
   </div>
 </div>
-<div id="toast"></div>
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import{getFirestore,collection,doc,setDoc,getDoc,addDoc,getDocs,deleteDoc,query,orderBy,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-const fbApp=initializeApp({apiKey:"AIzaSyAzfA0I4rHE3kdq9fLtBZhHZqjOCREp17A",authDomain:"poppapp-10b65.firebaseapp.com",projectId:"poppapp-10b65",storageBucket:"poppapp-10b65.firebasestorage.app",messagingSenderId:"816956088655",appId:"1:816956088655:web:5880cdeda44397f172e53a"});
-const db=getFirestore(fbApp);
-function getDeviceId(){let id=localStorage.getItem('poppapp_device_id');if(!id){id='dev_'+Math.random().toString(36).slice(2)+Date.now();localStorage.setItem('poppapp_device_id',id);}return id;}
-const DEVICE_ID=getDeviceId();
-let PROFILO=null;
-async function loadProfilo(){try{const s=await getDoc(doc(db,'profili',DEVICE_ID));if(s.exists())return s.data();}catch(e){}return null;}
-async function saveProfilo(p){await setDoc(doc(db,'profili',DEVICE_ID),p);}
-function logCol(){return collection(db,'profili',DEVICE_ID,'poppate');}
-async function addEntry(e){await addDoc(logCol(),{...e,ts:serverTimestamp()});}
-async function deleteEntry(id){await deleteDoc(doc(db,'profili',DEVICE_ID,'poppate',id));}
-async function getEntries(){const q=query(logCol(),orderBy('startISO','desc'));const s=await getDocs(q);return s.docs.map(d=>({...d.data(),_id:d.id}));}
 
-const GUIDA={
-1:{allattamento:`<p><strong>{nome}</strong> è in piena fase <strong>colostro → latte di transizione</strong>. Il colostro è denso, giallognolo, ricchissimo di anticorpi: il primo vaccino naturale. Offri il seno <strong>8–12 volte/24h</strong>, anche svegliando {nome} se dorme più di 3 ore di giorno.</p><ul><li>Ogni poppata: <strong>10–20 min per seno</strong>; svuota bene il primo</li><li>Il seno usato per ultimo è il <strong>primo della prossima poppata</strong></li><li>Buon attacco: bocca spalancata, labbra estroflesse</li><li>6+ pannolini bagnati e 3+ feci/giorno = ottima idratazione</li></ul>`,sviluppo:`<p>{nome} vede nitidamente solo a <strong>20–30 cm</strong>. Riconosce già il tuo odore e la voce della mamma.</p><ul><li>Riflessi innati: suzione, Moro, prensione palmare</li><li>Il pianto è l'unico linguaggio disponibile — non è capriccio</li><li>Pelle a pelle regola battito, temperatura, cortisolo</li></ul>`,attivita:`<ul><li><strong>Pelle a pelle</strong> 1–2 ore/giorno: stabilizza parametri vitali e favorisce il latte</li><li>Parla, canta, sussurra durante cambi e poppate</li><li>Tummy time brevissimo sul tuo petto: 1–2 minuti</li></ul>`,sonno:`<p>{nome} dorme <strong>16–18 ore/24</strong> senza distinguere giorno e notte. È fisiologico.</p><ul><li>Non esiste viziare: rispondere sempre rafforza il sistema nervoso</li><li>Culla a fianco riduce i risvegli notturni</li></ul>`,feci:`<ul><li>Gg 1–2: <strong>meconio</strong> — nero/verdone, denso. Normale</li><li>Gg 3–4: transizione, verde-giallastro, più morbido</li><li>Dal 5° giorno: <strong>giallo senape</strong>, granuloso, liquido, odore dolciastro — normalissimo</li><li>Frequenza: 3–8 volte/giorno o ad ogni poppata</li><li>🔴 Meconio ancora dopo il 4° giorno: segnala al pediatra</li></ul>`,segnali:`<ul><li>🔴 Perdita peso >10% senza recupero</li><li>🔴 Meno di 6 pannolini bagnati dopo il 4° giorno</li><li>🔴 Ittero che avanza (guance, torace) dopo il 5° giorno</li><li>🟡 Pianto acuto inconsolabile prolungato</li></ul>`},
-2:{allattamento:`<p>Il latte maturo è arrivato — è la <strong>montata lattea</strong>. Continua ad allattare frequentemente.</p><ul><li>Se i seni sono troppo gonfi, spremi un po' a mano prima</li><li>Possibile <strong>growth spurt</strong> intorno al 10° giorno: 24–48h di più fame</li><li>Idratazione mamma: 2+ litri acqua, grassi sani</li></ul>`,sviluppo:`<p>{nome} inizia a fissare i volti e seguire lentamente un oggetto in movimento.</p><ul><li>Distingue già la voce della mamma da altre voci</li><li>I periodi di veglia attenta iniziano ad allungarsi</li></ul>`,attivita:`<ul><li>Pelle a pelle ancora fondamentale</li><li>Mostra il tuo viso a 25 cm: primo gioco interattivo</li><li>Fascia elastica: posizione fisiologica per {nome}</li></ul>`,sonno:`<p>Ancora cicli brevi. Inizia ad associare luce del giorno con vita sociale e buio con silenzio.</p>`,feci:`<ul><li>Colore: <strong>giallo senape</strong>, a volte verde chiaro (normale)</li><li>Consistenza: liquida/granulosa — non è diarrea</li><li>Frequenza: molto variabile, normale in entrambi i casi</li><li>🟡 Feci verde scuro schiumose: squilibrio latte anteriore/posteriore — fai svuotare bene il primo seno</li></ul>`,segnali:`<ul><li>🔴 Febbre materna >38.5°C (possibile mastite)</li><li>🟡 Ragadi ai capezzoli: rivedere l'attacco o consultare IBCLC</li></ul>`},
-3:{allattamento:`<p>{nome} più efficiente: svuota un seno in <strong>5–7 minuti</strong>. Poppate brevi ≠ poco latte.</p><ul><li>Possibile secondo <strong>growth spurt</strong></li><li>Seni meno pieni: si regolano sulla domanda — normale</li></ul>`,sviluppo:`<p>Primi accenni di <strong>sorriso sociale</strong>. Possibili <strong>coliche serali</strong> (picco alle 6 settimane).</p>`,attivita:`<ul><li>Tummy time sul tappetino: 3–5 min, 3 volte/giorno</li><li>Oggetti <strong>bianco/nero ad alto contrasto</strong> a 30 cm</li><li>Canta filastrocche lentamente</li></ul>`,sonno:`<p>Possibile primo blocco di sonno più lungo (3–4h) di notte.</p><ul><li>Rituale: poppata → buio → suono bianco → stessa posizione</li></ul>`,feci:`<ul><li>Alcuni bambini iniziano a fare feci ogni 2–3 giorni — normale se morbide</li><li>Colore normale: giallo, giallo-verde, senape</li><li>🟡 Feci bianche o grigie: segnala subito al pediatra</li><li>🟡 Tracce di sangue: possibile allergia proteine latte vaccino</li></ul>`,segnali:`<ul><li>🔴 Vomito a getto ripetuto</li><li>🟡 Coliche intense >3h consecutive</li></ul>`},
-4:{allattamento:`<p>Produzione calibrata su {nome}. <strong>Non guardare l'orologio — guarda {nome}.</strong></p>`,sviluppo:`<p>{nome} risponde al tuo viso con il corpo: braccia che si agitano, gambe che pedalano.</p><ul><li>Pianto differenziato: fame, stanchezza, dolore hanno toni diversi</li></ul>`,attivita:`<ul><li>Tummy time: 5 min, 3–4 volte/giorno</li><li>Specchio a 20 cm: {nome} osserva il proprio viso</li><li><strong>Massaggio neonatale</strong>: olio di mandorle dolci o cocco biologico</li></ul>`,sonno:`<p>Finestra di veglia: 45–60 min prima della sovrastimolazione.</p>`,feci:`<ul><li>Alcuni bambini: feci ogni 3–7 giorni — normale se morbide e abbondanti</li><li>Non è stitichezza: il latte materno è quasi completamente assorbito</li><li>🟡 Feci dure e secche: quello sì è stitichezza — segnala al pediatra</li></ul>`,segnali:`<ul><li>🔴 Peso non sale di almeno 150 g/settimana</li><li>🟡 Sangue nelle feci: segnala subito</li></ul>`},
-5:{allattamento:`<p>I seni sembrano "vuoti" — la produzione si è sincronizzata. <strong>Momento critico</strong>: continua ad allattare.</p>`,sviluppo:`<p>Intorno alle 5–6 settimane: <strong>primo sorriso sociale vero</strong>. Vocalizza ("ah", "oh"). Coliche al picco.</p>`,attivita:`<ul><li>Dialogo vocale: aspetta che {nome} vocalizzi, rispondi, aspetta — turno conversazionale</li><li>Tummy time: 5–7 min, 4 volte/giorno</li></ul>`,sonno:`<p>La routine serale inizia ad avere effetto. Se {nome} dorme 4–5h di notte, non svegliarlo/la.</p>`,feci:`<ul><li>Frequenza può ridursi ancora — normale</li><li>Massaggio pancia in senso orario aiuta la motilità in modo naturale</li><li>Bagno caldo + massaggio addominale: rimedi naturali efficaci</li></ul>`,segnali:`<ul><li>🟡 Coliche >3h/giorno per >3 giorni/sett: valuta osteopata craniosacrale neonatale</li></ul>`},
-6:{allattamento:`<p><strong>6 settimane: traguardo importante.</strong> Allattamento consolidato. Puoi iniziare a costruire scorte (frigo 48h, freezer 3 mesi).</p>`,sviluppo:`<p>Controllo del capo in tummy time. {nome} sorride attivamente. <strong>Visita pediatrica di routine.</strong></p>`,attivita:`<ul><li>Tummy time: 7–10 min — {nome} alza la testa a 45°</li><li>Libro a contrasto bianco/nero</li><li>Passeggiate all'aperto quotidiane: luce naturale calibra il ritmo circadiano</li></ul>`,sonno:`<p>Possibile miglioramento del sonno notturno. Finestra di veglia: 1.5–2h.</p>`,feci:`<ul><li>Colore: giallo/senape o verde chiaro — entrambi normali</li><li>Odore: dolciastro (diverso dal latte artificiale)</li><li>Frequenza: da più volte/giorno a una volta/settimana — range normalissimo</li></ul>`,segnali:`<ul><li>🔴 Nessun sorriso sociale entro le 8 settimane</li></ul>`},
-7:{allattamento:`<p>Poppate più brevi: {nome} <strong>succhia più forte e svuota più velocemente</strong>. Possibile terzo growth spurt.</p>`,sviluppo:`<p><strong>Comunicazione intenzionale</strong>: {nome} fa suoni per attirare la tua attenzione. Segue oggetti a 180°.</p>`,attivita:`<ul><li>Gioco del "ti vedo": nascondi il viso e riappari</li><li>Musica dal vivo: frequenze più ricche della musica registrata</li></ul>`,sonno:`<p>Luce naturale mattutina: portalo/la fuori ogni mattina per il ritmo circadiano.</p>`,feci:`<ul><li>Pattern stabile. Nessun cambiamento atteso</li><li>"Grunt baby syndrome" (si sforza ma feci morbide): normale, sta imparando a coordinare i muscoli</li></ul>`,segnali:`<ul><li>🟡 Preferenza costante per un lato della testa: valuta fisioterapia preventiva</li></ul>`},
-8:{allattamento:`<p>Due mesi. Poppate <strong>6–8/24h</strong>, più regolari.</p>`,sviluppo:`<p><strong>Wonder Week 5</strong>: {nome} più irrequieto/a per qualche giorno — scatto cognitivo. Ride apertamente.</p>`,attivita:`<ul><li>Tummy time: 10 min, 4–5 volte/giorno — {nome} alza la testa a 45–90°</li><li>Palestrina con arco e oggetti colorati</li><li>Lettura ad alta voce quotidiana</li></ul>`,sonno:`<p>Possibile <strong>regressione del sonno</strong> legata allo scatto cognitivo. Dura 1–2 settimane.</p>`,feci:`<ul><li>Feci leggermente più consistenti con la maturazione digestiva</li><li>Verde acceso dopo notte agitata: normale e temporaneo</li><li>🟡 Muco nelle feci ripetutamente: possibile intolleranza alimentare materna</li></ul>`,segnali:`<ul><li>🔴 Non sorride ai volti familiari a 2 mesi</li><li>🔴 Non segue oggetti con gli occhi</li></ul>`},
-9:{allattamento:`<p>Poppate <strong>sociali e distratte</strong>: {nome} si stacca per guardarti. Allatta in ambienti tranquilli.</p>`,sviluppo:`<p>{nome} scopre le proprie mani. Vocalizza con sequenze più lunghe ("aaaa-goo").</p>`,attivita:`<ul><li>Anelli di legno naturale, sonagli leggeri</li><li>Dondolo o amaca: stimolazione vestibolare profonda</li></ul>`,sonno:`<p>Notti di 5–6h consecutive iniziano a comparire. Finestra di veglia: 2h.</p>`,feci:`<ul><li>Pattern prevedibile stabilito</li><li>Feci giallo-arancio: normale variazione legata alla dieta della mamma</li></ul>`,segnali:`<ul><li>🟡 Non porta oggetti alla bocca o alla linea mediana</li></ul>`},
-10:{allattamento:`<p>Possibile <strong>growth spurt 10–12 settimane</strong>: asseconda {nome}, la produzione risponde entro 24–48h.</p>`,sviluppo:`<p>{nome} inizia a reggere la testa in verticale. Risponde al proprio nome.</p>`,attivita:`<ul><li>Posizione semi-seduta con supporto</li><li>Canzoni con movimenti: corpo + ritmo + linguaggio insieme</li></ul>`,sonno:`<p>Considera di <strong>anticipare la nanna serale</strong> (19–20h): bambini stanchi prima dormono meglio.</p>`,feci:`<ul><li>Nessun cambiamento atteso</li><li>Buon momento per osservare il pattern personale di {nome} — cambierà molto con i solidi</li></ul>`,segnali:`<ul><li>🟡 Nessun controllo del capo durante il tummy time</li></ul>`},
-11:{allattamento:`<p>Verso 11–12 settimane allattamento spesso <strong>completamente stabilizzato</strong>. Poppate notturne diminuiscono.</p>`,sviluppo:`<p>Grande <strong>coordinazione occhio-mano</strong>. {nome} tende la mano verso oggetti appesi.</p>`,attivita:`<ul><li>Tummy time: posizione proto-cobra (spinge su avambracci)</li><li>Lettura quotidiana: immagini grandi, poche parole per pagina</li></ul>`,sonno:`<p>Alcune notti senza poppata possono comparire. Non svegliare {nome}.</p>`,feci:`<ul><li>Feci stabili. Con riduzione poppate notturne potresti notare feci più concentrate al mattino — normale</li></ul>`,segnali:`<ul><li>🟡 Nessun interesse per oggetti in movimento nel campo visivo</li></ul>`},
-12:{allattamento:`<p>Tre mesi: la <strong>"luna di miele" dell'allattamento</strong>. OMS: esclusivo fino a 6 mesi.</p>`,sviluppo:`<p>{nome} è un <strong>essere sociale a tutti gli effetti</strong>: ride, vocalizza, esprime preferenze. Inizia a rollare dal fianco.</p>`,attivita:`<ul><li>Tummy time: 15–20 min totali al giorno</li><li>Musica e danza in braccio</li><li><strong>Natura ogni giorno</strong>: vento, luce, suoni naturali</li></ul>`,sonno:`<p>Blocchi notturni di 5–6h per molti bambini. Nanne: mattina (lunga), pomeriggio, sera (breve).</p>`,feci:`<ul><li>A 3 mesi il sistema digestivo è molto più maturo</li><li>Frequenza spesso si riduce a 1 volta ogni 2–4 giorni — normalissimo</li><li>Consistenza ancora morbida/pastosa — mai dura</li><li><strong>Importante</strong>: questo cambio di frequenza a 3 mesi è fisiologico, non stitichezza</li></ul>`,segnali:`<ul><li>🔴 Nessun controllo della testa a 3 mesi</li><li>🔴 Non segue con gli occhi a 180°</li></ul>`},
-m4:{allattamento:`<p>Allattamento maturo e reciproco. Possibile <strong>nursing strike</strong> temporaneo. Niente solidi ancora.</p>`,sviluppo:`<p><strong>Wonder Week 19</strong>: {nome} capisce le sequenze causa-effetto. Rotola, afferra, ride a crepapelle.</p>`,attivita:`<ul><li>Gioco libero al pavimento: esplorazione motoria</li><li>Oggetti di materiali diversi: legno, tessuto, gomma naturale</li><li>Bolle di sapone: tracking visivo + meraviglia</li></ul>`,sonno:`<p>La famigerata <strong>regressione del sonno dei 4 mesi</strong>: fisiologica, dura 2–6 settimane.</p>`,feci:`<ul><li>Pattern stabile del latte materno</li><li>Con più poppate notturne (regressione) potresti vedere lieve aumento di frequenza — normale</li><li>🔴 Non introdurre succhi o acqua "per aiutare la digestione": non servono</li></ul>`,segnali:`<ul><li>🔴 Non afferra oggetti a 4 mesi</li><li>🔴 Non sorride spontaneamente</li></ul>`},
-m5:{allattamento:`<p>{nome} molto distratto/a al seno. <strong>Allatta in ambienti tranquilli.</strong> Niente solidi — OMS indica 6 mesi.</p>`,sviluppo:`<p>{nome} si siede con poco supporto. Trasferisce oggetti da una mano all'altra. Balbettio ("ba-ba").</p>`,attivita:`<ul><li>Gioco con acqua tiepida in bacinella</li><li>Primo libro morbido da esplorare</li><li>Natura in fascia o zaino ergonomico</li></ul>`,sonno:`<p>2 nanne diurne lunghe. Finestra di veglia: 2–2.5h.</p>`,feci:`<ul><li>Ultime settimane di feci da solo latte materno</li><li>Annota il pattern "di base" di {nome}: cambierà molto con i solidi</li><li>🟡 Feci molto dure: segnala al pediatra (raro con latte materno)</li></ul>`,segnali:`<ul><li>🔴 Non si siede con supporto a 5 mesi</li><li>🔴 Non balbetta</li></ul>`},
-m6:{allattamento:`<p><strong>6 mesi: iniziano i solidi</strong> in affiancamento al latte (primario per tutto il primo anno). Approccio consigliato: <strong>BLW</strong>. Allatta sempre prima dei pasti.</p><ul><li>Vietati: sale, zucchero, miele (fino a 12 mesi), latte vaccino come bevanda</li></ul>`,sviluppo:`<p>{nome} si siede autonomamente. Capisce la <strong>permanenza degli oggetti</strong>. Possibile ansia da separazione.</p>`,attivita:`<ul><li>Esplorazione libera degli alimenti: toccare, schiacciare, annusare</li><li>Gioco con contenitori: riempire e svuotare</li><li>Canzoni con gesti: gesto + parola + ritmo</li></ul>`,sonno:`<p>Con i solidi il sonno tende a migliorare. <strong>2 nanne diurne</strong> fino a 9–12 mesi.</p>`,feci:`<ul><li>Con i primi solidi le feci cambiano <strong>radicalmente</strong></li><li>Più solide, più scure, odore più forte — normale e atteso</li><li>Colore variabile: verde con spinaci, arancione con carote, rossastro con barbabietole (non è sangue)</li><li>Pezzi di cibo riconoscibili: il sistema digestivo sta imparando</li><li>Possibile stitichezza transitoria: aumenta il latte, offri acqua in bicchierino</li><li>🔴 Sangue nelle feci con i solidi: segnala al pediatra</li><li>🟡 Feci molto dure e frequenti difficoltà: riduci i solidi, aumenta frutta (pera, prugna)</li></ul>`,segnali:`<ul><li>🔴 Non si siede autonomamente a 6 mesi</li><li>🔴 Nessun balbettio con consonanti</li><li>🔴 Nessun interesse per il cibo</li></ul>`}
+<div id="toast"></div>
+
+<script type="module">
+import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import{getFirestore,collection,doc,setDoc,getDocs,deleteDoc,query,orderBy,onSnapshot,writeBatch}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const FB={apiKey:"AIzaSyAzfA0I4rHE3kdq9fLtBZhHZqjOCREp17A",authDomain:"poppapp-10b65.firebaseapp.com",projectId:"poppapp-10b65",storageBucket:"poppapp-10b65.firebasestorage.app",messagingSenderId:"816956088655",appId:"1:816956088655:web:5880cdeda44397f172e53a"};
+const db=getFirestore(initializeApp(FB));
+
+function getDID(){let id=localStorage.getItem('poppapp_did');if(!id){id='dev_'+Math.random().toString(36).slice(2)+Date.now();localStorage.setItem('poppapp_did',id);}return id;}
+const DID=getDID();
+const profiloRef=()=>doc(db,'profili',DID);
+const poppateRef=()=>collection(db,'profili',DID,'poppate');
+const pannoliniRef=()=>collection(db,'profili',DID,'pannolini');
+const poppataDoc=id=>doc(db,'profili',DID,'poppate',String(id));
+const pannolDoc=id=>doc(db,'profili',DID,'pannolini',String(id));
+const pesoRef=()=>collection(db,'profili',DID,'pesi');
+const pesoDoc=id=>doc(db,'profili',DID,'pesi',String(id));
+
+let profilo=null,logCache=[],pannoliniCache=[],pesoCache=[],unsubLog=null,unsubPann=null,unsubPeso=null;
+
+async function loadProfilo(){
+  try{const snap=await getDocs(collection(db,'profili'));const mine=snap.docs.find(d=>d.id===DID);if(mine){profilo=mine.data();return true;}}catch(e){console.error(e);}
+  return false;
+}
+async function saveProfilo(p){await setDoc(profiloRef(),p);profilo=p;}
+async function saveEntry(e){setSyncing();await setDoc(poppataDoc(e.id),e);}
+async function removeEntry(id){setSyncing();await deleteDoc(poppataDoc(id));toast('Eliminata');}
+async function savePann(p){setSyncing();await setDoc(pannolDoc(p.id),p);}
+async function removePann(id){setSyncing();await deleteDoc(pannolDoc(id));}
+
+function startLogListener(){
+  if(unsubLog)unsubLog();
+  unsubLog=onSnapshot(query(poppateRef(),orderBy('startISO','desc')),snap=>{
+    logCache=snap.docs.map(d=>d.data());setSyncOk();updateHeader();
+    const ap=document.querySelector('.page.active')?.id;
+    if(ap==='page-log')renderLog();if(ap==='page-stats')renderStats();
+  },e=>setSyncErr());
+  if(unsubPann)unsubPann();
+  unsubPann=onSnapshot(query(pannoliniRef(),orderBy('ts','desc')),snap=>{
+    pannoliniCache=snap.docs.map(d=>d.data());
+    updatePannoliniCard();
+    const ap=document.querySelector('.page.active')?.id;
+    if(ap==='page-stats')renderStats();
+  },e=>console.error(e));
+  if(unsubPeso)unsubPeso();
+  unsubPeso=onSnapshot(query(pesoRef(),orderBy('data','desc')),snap=>{
+    pesoCache=snap.docs.map(d=>d.data());
+    renderPesoCard();
+    const ap=document.querySelector('.page.active')?.id;
+    if(ap==='page-stats')renderStats();
+  },e=>console.error(e));
+}
+
+function setSyncOk(){document.getElementById('syncDot').className='sync-dot ok';document.getElementById('syncLabel').textContent='sincronizzato';}
+function setSyncing(){document.getElementById('syncDot').className='sync-dot syncing';document.getElementById('syncLabel').textContent='salvataggio…';}
+function setSyncErr(){document.getElementById('syncDot').className='sync-dot';document.getElementById('syncLabel').textContent='offline';}
+
+// ── COLORI CACCA ─────────────────────────────────────
+const COLORI=[
+  {id:'giallo-senape',label:'Giallo senape',hex:'#c8a832',note:'Normale allattamento'},
+  {id:'giallo-chiaro',label:'Giallo chiaro',hex:'#e8d070',note:'Normale'},
+  {id:'verde',label:'Verde',hex:'#5a9a5a',note:'Transizione / spinaci'},
+  {id:'verde-scuro',label:'Verde scuro',hex:'#2d6b2d',note:'Molta bile'},
+  {id:'marrone',label:'Marrone',hex:'#8b5e3c',note:'Normale con solidi'},
+  {id:'arancione',label:'Arancione',hex:'#e07830',note:'Carote / zucca'},
+  {id:'nero',label:'Nero/Scuro',hex:'#2a2a2a',note:'Meconio / segnala'},
+  {id:'bianco',label:'Chiaro/Bianco',hex:'#d4d4c0',note:'⚠️ Segnala subito'},
+];
+
+function buildColoriGrid(){
+  document.getElementById('coloriGrid').innerHTML=COLORI.map(c=>`
+    <button class="colore-btn" id="col-${c.id}" onclick="setColore('${c.id}')">
+      <div class="colore-dot" style="background:${c.hex};${c.id==='bianco'?'border:1px solid #666':''}"></div>
+      <div class="colore-label">${c.label}</div>
+    </button>`).join('');
+}
+
+// ── STATO PANNOLINI ───────────────────────────────────
+let caccaQuant='media',caccaCons='morbida',caccaColore='giallo-senape';
+
+function todayStr(){return new Date().toDateString();}
+function todayPann(){return pannoliniCache.filter(p=>new Date(p.ts).toDateString()===todayStr());}
+function pipiOggi(){return todayPann().filter(p=>p.tipo==='pipi').length;}
+function caccaOggi(){return todayPann().filter(p=>p.tipo==='cacca').length;}
+
+function updatePannoliniCard(){
+  document.getElementById('pipiCount').textContent=pipiOggi();
+  document.getElementById('caccaCount').textContent=caccaOggi();
+  document.getElementById('pannoliniDate').textContent=new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'short'});
+}
+
+window.addPipi=async function(delta){
+  if(delta>0){
+    const p={id:Date.now(),tipo:'pipi',ts:new Date().toISOString()};
+    await savePann(p);toast('💧 Pipì registrata');
+  } else {
+    const list=todayPann().filter(p=>p.tipo==='pipi');
+    if(list.length>0){await removePann(list[0].id);toast('Pipì rimossa');}
+  }
 };
 
-const SMETA=[{key:'allattamento',icon:'🍼',label:'Allattamento'},{key:'sviluppo',icon:'🧠',label:'Sviluppo'},{key:'attivita',icon:'🤸',label:'Attività & Stimolazione'},{key:'sonno',icon:'😴',label:'Sonno'},{key:'feci',icon:'💩',label:'Feci'},{key:'segnali',icon:'⚠️',label:'Segnali da osservare'}];
+window.removeCacca=async function(){
+  const list=todayPann().filter(p=>p.tipo==='cacca');
+  if(list.length>0){await removePann(list[0].id);toast('Cacca rimossa');}
+};
+
+// ── MODAL CACCA ───────────────────────────────────────
+window.apriModalCacca=function(){
+  const now=new Date();
+  document.getElementById('caccaOrario').value=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  setQuant('media');setCons('morbida');setColore('giallo-senape');
+  document.getElementById('caccaNote').value='';
+  document.getElementById('modalCacca').classList.add('open');
+};
+window.chiudiModal=function(){document.getElementById('modalCacca').classList.remove('open');};
+
+window.setQuant=function(v){caccaQuant=v;['poca','media','tanta'].forEach(x=>document.getElementById('q-'+x).classList.toggle('active',x===v));};
+window.setCons=function(v){caccaCons=v;['liquida','morbida','solida'].forEach(x=>document.getElementById('c-'+x).classList.toggle('active',x===v));};
+window.setColore=function(v){caccaColore=v;COLORI.forEach(c=>document.getElementById('col-'+c.id).classList.toggle('active',c.id===v));};
+
+window.salvaCacca=async function(){
+  const orario=document.getElementById('caccaOrario').value;
+  const [hh,mm]=orario.split(':').map(Number);
+  const ts=new Date();ts.setHours(hh,mm,0,0);
+  const p={id:Date.now(),tipo:'cacca',ts:ts.toISOString(),quant:caccaQuant,cons:caccaCons,colore:caccaColore,note:document.getElementById('caccaNote').value.trim()};
+  chiudiModal();
+  await savePann(p);
+  toast('💩 Cacca registrata');
+};
+
+// ── GUIDA DATA ────────────────────────────────────────
+const GUIDA={
+1:{allattamento:`<p>In piena <strong>fase colostro → latte di transizione</strong>. Il colostro è denso, giallognolo, ricchissimo di anticorpi. Offri il seno <strong>8–12 volte nelle 24 ore</strong>.</p><ul><li>Ogni poppata: <strong>10–20 min per seno</strong>; svuota bene il primo</li><li>Il seno usato per ultimo è il <strong>primo della prossima poppata</strong></li><li>6+ pannolini bagnati/giorno dopo il 4° = ottima idratazione</li></ul>`,sviluppo:`<p>Il bambino vede a <strong>20–30 cm</strong>. Riconosce già il tuo odore e la tua voce.</p><ul><li>Riflessi innati: suzione, Moro, prensione palmare</li><li>Il pianto è l'unico linguaggio disponibile</li><li>Pelle a pelle regola battito, temperatura e cortisolo</li></ul>`,attivita:`<ul><li><strong>Pelle a pelle</strong> almeno 1–2 ore/giorno</li><li>Parla, canta, sussurra durante cambi e poppate</li><li>Tummy time brevissimo sul tuo petto: 1–2 minuti</li></ul>`,sonno:`<p>Il bambino dorme <strong>16–18 ore su 24</strong> in cicli di 45–60 min senza distinguere giorno e notte.</p><ul><li>Rispondere sempre ai segnali rafforza il sistema nervoso</li><li>Suoni bianchi mimano l'ambiente uterino</li></ul>`,feci:`<p>Nei primissimi giorni: <strong>meconio</strong> — nerastro, denso, quasi catramoso. Normale.</p><ul><li>Gg 3–4: transizione, feci verdognole</li><li>Gg 5–6: giallo senape, morbide, granulate — tipiche dell'allattamento</li><li>Frequenza normale: 1–10+ volte/giorno</li><li>🔴 Feci ancora scure dopo il 4° giorno: segnala al pediatra</li></ul>`,segnali:`<ul><li>🔴 Perdita di peso >10% senza recupero</li><li>🔴 Meno di 6 pannolini bagnati dopo il 4° giorno</li><li>🔴 Ittero che avanza dopo il 5° giorno</li></ul>`},
+2:{allattamento:`<p>Il latte maturo è arrivato — è la <strong>montata lattea</strong>. La domanda regola l'offerta.</p><ul><li>Possibile <strong>growth spurt</strong> intorno al 10° giorno: 24–48h di più fame</li><li>Idratazione mamma: 2+ litri + grassi sani</li></ul>`,sviluppo:`<p>Il bambino inizia a <strong>fissare i volti</strong> per brevi istanti. Distingue la voce della mamma.</p>`,attivita:`<ul><li>Pelle a pelle ancora fondamentale</li><li>Tummy time sul tuo petto: 2–3 min, 2–3 volte/giorno</li><li><strong>Fascia elastica</strong>: libera le mani, posizione fisiologica</li></ul>`,sonno:`<p>Ancora cicli brevi. Inizia ad associare luce del giorno con vita attiva e buio con silenzio.</p>`,feci:`<p>Feci ora <strong>giallo canarino o giallo senape</strong>, morbide, spesso granulate.</p><ul><li>Odore dolciastro e delicato</li><li>Frequenza: molto variabile — entrambi i ritmi normali se il bambino cresce</li><li>🔴 Sangue nelle feci: segnala subito</li></ul>`,segnali:`<ul><li>🔴 Febbre materna >38.5°C (possibile mastite)</li><li>🟡 Ragadi: rivedere l'attacco o consultare IBCLC</li></ul>`},
+3:{allattamento:`<p>Più fluido. Poppate brevi ≠ poco latte. Possibile secondo <strong>growth spurt</strong>.</p>`,sviluppo:`<p>Primi accenni di <strong>sorriso sociale</strong>. Possibili <strong>coliche serali</strong>.</p>`,attivita:`<ul><li>Tummy time sul tappetino: 3–5 min, 3 volte/giorno</li><li>Oggetti in <strong>bianco e nero ad alto contrasto</strong> a 30 cm</li></ul>`,sonno:`<p>Possibile blocco più lungo di notte (3–4h). Rituale: poppata → buio → suono bianco.</p>`,feci:`<p>Feci restano <strong>giallo-dorate</strong>. Frequenza può diminuire.</p><ul><li>Alcuni bambini: feci ogni 2–4 giorni — normale se morbide</li><li>Non esiste stitichezza per bambini allattati se le feci sono morbide</li></ul>`,segnali:`<ul><li>🔴 Vomito a getto ripetuto</li><li>🟡 Coliche intense >3 ore consecutive</li></ul>`},
+4:{allattamento:`<p>Produzione calibrata. <strong>Non guardare l'orologio, guarda il bambino.</strong></p>`,sviluppo:`<p>Risponde al tuo viso con il corpo. Pianto differenziato.</p>`,attivita:`<ul><li>Tummy time: 5 min, 3–4 volte/giorno</li><li>Specchio a 20 cm</li><li><strong>Massaggio neonatale</strong>: olio di mandorle o cocco biologico</li></ul>`,sonno:`<p>Finestra di veglia: 45–60 min. Metti giù ai primi segnali di stanchezza.</p>`,feci:`<p>Frequenza ancora variabile. Alcuni bambini: feci abbondanti ogni 4–7 giorni — normalissimo se morbide.</p>`,segnali:`<ul><li>🔴 Peso non sale di almeno 150 g/settimana</li></ul>`},
+5:{allattamento:`<p>I seni sembrano "vuoti" — la produzione si è sincronizzata. <strong>Momento critico: non smettere.</strong></p>`,sviluppo:`<p>Il <strong>primo sorriso sociale vero</strong>. Vocalizza in risposta alla tua voce.</p>`,attivita:`<ul><li><strong>Dialogo vocale</strong>: aspetta, rispondi, aspetta ancora</li><li>Tummy time: 5–7 min, 4 volte/giorno</li></ul>`,sonno:`<p>La routine serale funziona. Blocco di 4–5h di notte? Non svegliare.</p>`,feci:`<p>Se non va per giorni ma poi fa scarica abbondante e morbida: normale per bambino allattato.</p>`,segnali:`<ul><li>🟡 Coliche >3h/giorno per >3 gg/sett.: valuta osteopata craniosacrale</li></ul>`},
+6:{allattamento:`<p><strong>Sei settimane: traguardo.</strong> Allattamento consolidato. Scorte: frigorifero 48h, freezer 3 mesi.</p>`,sviluppo:`<p>Controllo del capo inizia durante il tummy time. Sorride attivamente. <strong>Visita pediatrica di routine.</strong></p>`,attivita:`<ul><li>Tummy time: 7–10 min — testa a 45°</li><li>Libro a contrasto (bianco/nero)</li><li>Passeggiate all'aperto: calibra il ritmo circadiano</li></ul>`,sonno:`<p>Possibile miglioramento notturno. Finestra di veglia: 1.5–2 ore.</p>`,feci:`<p>Verso le 6 settimane molti bambini allattati vanno di corpo sempre meno spesso.</p><ul><li>Da 1 volta ogni 7–10 giorni può essere normalissimo se morbide</li></ul>`,segnali:`<ul><li>🔴 Nessun sorriso sociale entro le 8 settimane</li></ul>`},
+7:{allattamento:`<p>Poppate più brevi ma efficaci. Possibile terzo growth spurt: 2–3 giorni di più fame.</p>`,sviluppo:`<p>Comunicazione intenzionale. Esplora le mani con la bocca.</p>`,attivita:`<ul><li>Gioco del "ti vedo": nascondi e riappari</li><li>Musica dal vivo: frequenze più ricche del registrato</li></ul>`,sonno:`<p>Luce naturale mattutina per sincronizzare il ritmo circadiano.</p>`,feci:`<p>Ritmo ormai stabilizzato sul pattern individuale del bambino.</p><ul><li>🟡 Feci improvvisamente verdi e acquose: possibile processo infettivo — monitora temperatura</li></ul>`,segnali:`<ul><li>🟡 Preferenza costante per un lato della testa: valuta osteopatia</li></ul>`},
+8:{allattamento:`<p>Due mesi. Poppate <strong>6–8 nelle 24 ore</strong>. Possibile Wonder Week 5.</p>`,sviluppo:`<p>Ride apertamente. Coordinazione migliorata. Porta le mani alla bocca intenzionalmente.</p>`,attivita:`<ul><li>Tummy time: 10 min, 4–5 volte/giorno — testa a 45–90°</li><li>Palestrina con arco e oggetti appendenti</li></ul>`,sonno:`<p>Possibile <strong>regressione del sonno</strong> da scatto cognitivo. Dura 1–2 settimane.</p>`,feci:`<p>Feci meno frequenti ma più abbondanti. Colore: giallo-oro, possibile sfumatura verde — normale.</p>`,segnali:`<ul><li>🔴 Non sorride ai volti familiari a 2 mesi</li></ul>`},
+9:{allattamento:`<p>Poppate sociali e distratte. Allatta in ambienti tranquilli. Niente solidi fino a 6 mesi.</p>`,sviluppo:`<p>Scopre le sue mani. Sorride allo specchio. Vocalizza sequenze più lunghe.</p>`,attivita:`<ul><li>Anelli di legno naturale da afferrare</li><li>Tummy time con giocattolo davanti</li></ul>`,sonno:`<p>Notti di 5–6 ore iniziano a comparire. Finestra di veglia: 2 ore.</p>`,feci:`<p>Frequenza stabile. Giallo-oro morbido = allattamento ottimale.</p><ul><li>🟡 Feci molto pallide o grigie: segnala subito al pediatra</li></ul>`,segnali:`<ul><li>🟡 Non porta oggetti alla bocca o alla linea mediana</li></ul>`},
+10:{allattamento:`<p>Possibile growth spurt 10–12 settimane. Poppate ogni 2.5–3 ore di giorno.</p>`,sviluppo:`<p>Regge la testa in verticale. Risponde al proprio nome. Ride di gusto.</p>`,attivita:`<ul><li>Posizione semi-seduta con supporto</li><li>Canzoni con movimenti: corpo + ritmo + linguaggio</li></ul>`,sonno:`<p>Anticipa la nanna serale (19–20h): funziona meglio.</p>`,feci:`<p>Verso le 10–12 settimane feci molto poco frequenti ma abbondanti.</p><ul><li>Test: è sereno tra una scarica e l'altra? Feci morbide? Se sì, normale</li></ul>`,segnali:`<ul><li>🟡 Nessun controllo del capo durante il tummy time</li></ul>`},
+11:{allattamento:`<p>Allattamento completamente stabilizzato. Se malato, il latte produce anticorpi specifici.</p>`,sviluppo:`<p>Coordinazione occhio-mano. Vocalizza in "conversazione".</p>`,attivita:`<ul><li>Tummy time: proto-posizione di cobra sugli avambracci</li><li>Lettura quotidiana: immagini grandi, poche parole</li></ul>`,sonno:`<p>Alcune notti senza poppata. Non svegliare se dorme.</p>`,feci:`<p>Ritmo definito. Colore giallo-oro = latte assimilato perfettamente.</p>`,segnali:`<ul><li>🟡 Nessun interesse per oggetti in movimento nel campo visivo</li></ul>`},
+12:{allattamento:`<p>Tre mesi. La <strong>"luna di miele" dell'allattamento</strong>. OMS: esclusivo fino a 6 mesi.</p>`,sviluppo:`<p>Tiene la testa stabile. In tummy time alza petto e testa a 90°. Inizia a rollare.</p>`,attivita:`<ul><li>Tummy time: 15–20 min totali/giorno</li><li>Musica e danza: vestibolare + ritmico + relazionale</li><li>Natura ogni giorno</li></ul>`,sonno:`<p>Blocchi notturni di 5–6 ore. Nanne: mattina (lunga), primo pomeriggio, sera (breve).</p>`,feci:`<p>Feci pochissimo frequenti ma abbondanti — il corpo assimila quasi tutto.</p><ul><li>Tra 1 volta ogni 7–14 giorni: normale se morbide</li></ul>`,segnali:`<ul><li>🔴 Nessun controllo della testa a 3 mesi</li><li>🔴 Non risponde a suoni forti</li></ul>`},
+m4:{allattamento:`<p>Allattamento maturo. Possibile <strong>nursing strike</strong>: passeggero. Niente solidi ancora.</p>`,sviluppo:`<p>Wonder Week 19: capisce cause ed effetti. Rotola, afferra, ride a crepapelle.</p>`,attivita:`<ul><li>Gioco libero al pavimento</li><li>Oggetti di legno, tessuto, gomma naturale</li></ul>`,sonno:`<p><strong>Regressione del sonno dei 4 mesi</strong>: fisiologica, dura 2–6 settimane.</p>`,feci:`<p>Feci restano giallo-oro se solo latte materno.</p><ul><li>🟡 Cambiamento improvviso senza variazioni dieta: segnala al pediatra</li></ul>`,segnali:`<ul><li>🔴 Non afferra oggetti a 4 mesi</li></ul>`},
+m5:{allattamento:`<p>Molto distratto al seno di giorno. Niente solidi: OMS indica 6 mesi compiuti.</p>`,sviluppo:`<p>Si siede con pochissimo supporto. Trasferisce oggetti. Balbettio iniziale.</p>`,attivita:`<ul><li>Gioco con acqua tiepida in bacinella</li><li>Natura in fascia o zaino ergonomico</li></ul>`,sonno:`<p>2 nanne diurne lunghe. Finestra di veglia: 2–2.5 ore.</p>`,feci:`<p>Ultimo mese di feci "da latte puro". Con i solidi tutto cambierà.</p>`,segnali:`<ul><li>🔴 Non si siede con supporto</li><li>🔴 Non balbetta</li></ul>`},
+m6:{allattamento:`<p><strong>6 mesi: iniziano i solidi.</strong> Il latte materno rimane primario per tutto il primo anno.</p><ul><li>BLW: cibi morbidi che il bambino afferra da solo</li><li>Allatta <strong>prima</strong> dei pasti</li><li>Vietati: sale, zucchero, miele (fino a 12 mesi)</li></ul>`,sviluppo:`<p>Si siede autonomamente. Capisce la permanenza degli oggetti.</p>`,attivita:`<ul><li>Esplorazione libera degli alimenti: tocca, schiaccia, annusa</li><li>Gioco con contenitori: riempire e svuotare</li></ul>`,sonno:`<p>Con i solidi il sonno tende a migliorare. 2 nanne diurne.</p>`,feci:`<p>Con i solidi le feci cambiano radicalmente.</p><ul><li>Più solide, più scure, più odoranti: normale</li><li>Colore varia con gli alimenti: arancione (carota), verde (spinaci), rosso (barbabietola — innocuo)</li><li>🟡 Feci molto dure: più frutta (prugne, pere) e meno banana e riso</li><li>🔴 Sangue nelle feci: segnala al pediatra</li></ul>`,segnali:`<ul><li>🔴 Non si siede autonomamente</li><li>🔴 Nessun balbettio con consonanti</li></ul>`}
+};
+
+const SMETA=[{key:'allattamento',icon:'🍼',label:'Allattamento'},{key:'sviluppo',icon:'🧠',label:'Sviluppo'},{key:'attivita',icon:'🤸',label:'Attività & Stimolazione'},{key:'sonno',icon:'😴',label:'Sonno'},{key:'feci',icon:'💩',label:'Feci & Digestione'},{key:'segnali',icon:'⚠️',label:'Segnali da osservare'}];
 const ALL_KEYS=[1,2,3,4,5,6,7,8,9,10,11,12,'m4','m5','m6'];
 let guidaIdx=-1;
 
-function fmtTime(d){return d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});}
-function fmtDate(d){return d.toLocaleDateString('it-IT',{day:'numeric',month:'short'});}
-function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
-function senoLabel(s){return s==='S'?'Sinistro':s==='D'?'Destro':'Entrambi';}
-function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
-function fillN(txt,nome){return txt.replace(/\{nome\}/g,nome);}
-function getAge(birth){const days=Math.floor((Date.now()-new Date(birth+'T00:00:00'))/86400000);const weeks=Math.floor(days/7),wDay=days%7,months=Math.floor(days/30.44),mDay=Math.floor(days%30.44);let label;if(weeks<13){label=`Settimana ${weeks+1}`+(wDay>0?` · ${wDay}g`:'');}else{label=`${months} ${months===1?'mese':'mesi'}`+(mDay>0?` · ${mDay}g`:'');}return{days,weeks,months,label};}
+function getBirth(){return profilo?new Date(profilo.nascita+'T00:00:00'):null;}
+function getAge(){
+  const birth=getBirth();if(!birth)return null;
+  const days=Math.floor((Date.now()-birth)/86400000);
+  const weeks=Math.floor(days/7),months=Math.floor(days/30.44);
+  let label;
+  if(weeks<13)label=`Settimana ${weeks+1}`+(days%7>0?` · ${days%7}g`:'');
+  else label=`${months} ${months===1?'mese':'mesi'}`+(Math.floor(days%30.44)>0?` · ${Math.floor(days%30.44)}g`:'');
+  return{days,weeks,months,label};
+}
 function getGuidaKey(w){if(w<=0)return 1;if(w<12)return w+1;if(w<13)return 12;const m=Math.floor(w/4.33);if(m<=3)return 12;if(m===4)return 'm4';if(m===5)return 'm5';return 'm6';}
 function keyLabel(k){return typeof k==='number'?`Settimana ${k}`:{m4:'4 mesi',m5:'5 mesi',m6:'6 mesi'}[k];}
-function keyDates(k,birth){const b=new Date(birth+'T00:00:00');if(typeof k==='number'){const s=new Date(b);s.setDate(s.getDate()+(k-1)*7);const e=new Date(s);e.setDate(e.getDate()+6);return fmtDate(s)+' – '+fmtDate(e);}const m=parseInt(k.slice(1));const s=new Date(b);s.setDate(s.getDate()+Math.floor((m-1)*30.44));const e=new Date(b);e.setDate(e.getDate()+Math.floor(m*30.44)-1);return fmtDate(s)+' – '+fmtDate(e);}
+function keyDates(k){
+  const birth=getBirth();if(!birth)return'';
+  const fmt=d=>d.toLocaleDateString('it-IT',{day:'numeric',month:'short'});
+  if(typeof k==='number'){const s=new Date(birth);s.setDate(s.getDate()+(k-1)*7);const e=new Date(s);e.setDate(e.getDate()+6);return fmt(s)+' – '+fmt(e);}
+  const m=parseInt(k.slice(1));const s=new Date(birth);s.setDate(s.getDate()+Math.floor((m-1)*30.44));const e=new Date(birth);e.setDate(e.getDate()+Math.floor(m*30.44)-1);return fmt(s)+' – '+fmt(e);
+}
 
-let obSessoVal='F';
-window.obSesso=function(s){obSessoVal=s;['F','M'].forEach(v=>document.getElementById('ob-'+v).classList.toggle('active',v===s));};
-window.saveOnboarding=async function(){const nome=document.getElementById('obNome').value.trim();const data=document.getElementById('obData').value;const err=document.getElementById('obErr');if(!nome){err.textContent='Inserisci il nome del bambino';return;}if(!data){err.textContent='Inserisci la data di nascita';return;}err.textContent='';showLoading('Salvataggio…');try{PROFILO={nome,sesso:obSessoVal,nascita:data};await saveProfilo(PROFILO);document.getElementById('onboarding').classList.add('hidden');initApp();}catch(e){err.textContent='Errore di connessione. Riprova.';hideLoading();}};
-function showLoading(msg='caricamento…'){document.getElementById('loading').classList.remove('hidden');document.querySelector('.loading-sub').textContent=msg;}
-function hideLoading(){document.getElementById('loading').classList.add('hidden');}
-
+// ── TIMER ────────────────────────────────────────────
 let timerInt=null,startTime=null,elapsedMs=0,isPaused=false,isRunning=false,curSeno='S',curTipo='poppata';
-window.setSeno=function(s){curSeno=s;['S','D','SD'].forEach(v=>document.getElementById('btn-'+v).classList.toggle('active',v===s));if(isRunning)document.getElementById('infoSeno').textContent=senoLabel(s);};
-window.setTipo=function(t){curTipo=t;['poppata','coccola'].forEach(v=>document.getElementById('tipo-'+v).classList.toggle('active',v===t));if(isRunning)document.getElementById('infoTipo').textContent=cap(t);};
-window.startTimer=function(){startTime=Date.now();elapsedMs=0;isPaused=false;isRunning=true;document.getElementById('sessionInfo').style.display='flex';document.getElementById('infoInizio').textContent=fmtTime(new Date());document.getElementById('infoSeno').textContent=senoLabel(curSeno);document.getElementById('infoTipo').textContent=cap(curTipo);timerInt=setInterval(tickTimer,100);document.getElementById('timerDisplay').className='timer-display running';document.getElementById('timerLabel').textContent='in corso…';document.getElementById('btnArea').innerHTML='<div class="btn-row"><button class="btn-main btn-pause" onclick="pauseTimer()">⏸ Pausa</button><button class="btn-main btn-stop" onclick="stopTimer()">⏹ Fine</button></div>';};
-window.pauseTimer=function(){clearInterval(timerInt);elapsedMs+=Date.now()-startTime;isPaused=true;document.getElementById('timerDisplay').className='timer-display paused pulse';document.getElementById('timerLabel').textContent='in pausa';document.getElementById('btnArea').innerHTML='<div class="btn-row"><button class="btn-main btn-start" onclick="resumeTimer()">▶ Riprendi</button><button class="btn-main btn-stop" onclick="stopTimer()">⏹ Fine</button></div>';};
-window.resumeTimer=function(){startTime=Date.now();isPaused=false;timerInt=setInterval(tickTimer,100);document.getElementById('timerDisplay').className='timer-display running';document.getElementById('timerLabel').textContent='in corso…';document.getElementById('btnArea').innerHTML='<div class="btn-row"><button class="btn-main btn-pause" onclick="pauseTimer()">⏸ Pausa</button><button class="btn-main btn-stop" onclick="stopTimer()">⏹ Fine</button></div>';};
-window.stopTimer=async function(){clearInterval(timerInt);if(!isPaused)elapsedMs+=Date.now()-startTime;isRunning=false;isPaused=false;const sec=Math.round(elapsedMs/1000);const endNow=new Date();const entry={startISO:new Date(endNow.getTime()-sec*1000).toISOString(),end:endNow.toISOString(),durSec:sec,seno:curSeno,tipo:curTipo,note:document.getElementById('noteField').value.trim()};try{await addEntry(entry);}catch(e){toast('⚠️ Errore salvataggio');}document.getElementById('timerDisplay').textContent='00:00';document.getElementById('timerDisplay').className='timer-display';document.getElementById('timerLabel').textContent='pronto per iniziare';document.getElementById('sessionInfo').style.display='none';document.getElementById('noteField').value='';document.getElementById('btnArea').innerHTML='<button class="btn-main btn-start" onclick="startTimer()">▶ &nbsp;Inizia poppata</button>';elapsedMs=0;updateHeader();toast(`Salvata! ${Math.floor(sec/60)}m ${sec%60}s · ${senoLabel(curSeno)}`);};
+function setSeno(s){curSeno=s;['S','D','SD'].forEach(v=>document.getElementById('btn-'+v).classList.toggle('active',v===s));if(isRunning)document.getElementById('infoSeno').textContent=senoLabel(s);}
+function setTipo(t){curTipo=t;['poppata','coccola'].forEach(v=>document.getElementById('tipo-'+v).classList.toggle('active',v===t));if(isRunning)document.getElementById('infoTipo').textContent=cap(t);}
+function senoLabel(s){return s==='S'?'Sinistro':s==='D'?'Destro':'Entrambi';}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+function fmtTime(d){return d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});}
+
+function startTimer(){startTime=Date.now();elapsedMs=0;isPaused=false;isRunning=true;document.getElementById('sessionInfo').style.display='flex';document.getElementById('infoInizio').textContent=fmtTime(new Date());document.getElementById('infoSeno').textContent=senoLabel(curSeno);document.getElementById('infoTipo').textContent=cap(curTipo);timerInt=setInterval(tickTimer,100);document.getElementById('timerDisplay').className='timer-display running';document.getElementById('timerLabel').textContent='in corso…';document.getElementById('btnArea').innerHTML='<div class="btn-row"><button class="btn-main btn-pause" onclick="pauseTimer()">⏸ Pausa</button><button class="btn-main btn-stop" onclick="stopTimer()">⏹ Fine</button></div>';}
+function pauseTimer(){clearInterval(timerInt);elapsedMs+=Date.now()-startTime;isPaused=true;document.getElementById('timerDisplay').className='timer-display paused pulse';document.getElementById('timerLabel').textContent='in pausa';document.getElementById('btnArea').innerHTML='<div class="btn-row"><button class="btn-main btn-start" onclick="resumeTimer()">▶ Riprendi</button><button class="btn-main btn-stop" onclick="stopTimer()">⏹ Fine</button></div>';}
+function resumeTimer(){startTime=Date.now();isPaused=false;timerInt=setInterval(tickTimer,100);document.getElementById('timerDisplay').className='timer-display running';document.getElementById('timerLabel').textContent='in corso…';document.getElementById('btnArea').innerHTML='<div class="btn-row"><button class="btn-main btn-pause" onclick="pauseTimer()">⏸ Pausa</button><button class="btn-main btn-stop" onclick="stopTimer()">⏹ Fine</button></div>';}
+async function stopTimer(){clearInterval(timerInt);if(!isPaused)elapsedMs+=Date.now()-startTime;isRunning=false;isPaused=false;const sec=Math.round(elapsedMs/1000);const endNow=new Date();const entry={id:Date.now(),startISO:new Date(endNow.getTime()-sec*1000).toISOString(),end:endNow.toISOString(),durSec:sec,seno:curSeno,tipo:curTipo,note:document.getElementById('noteField').value.trim()};document.getElementById('timerDisplay').textContent='00:00';document.getElementById('timerDisplay').className='timer-display';document.getElementById('timerLabel').textContent='pronta per iniziare';document.getElementById('sessionInfo').style.display='none';document.getElementById('noteField').value='';document.getElementById('btnArea').innerHTML='<button class="btn-main btn-start" onclick="startTimer()">▶ &nbsp;Inizia poppata</button>';elapsedMs=0;await saveEntry(entry);toast(`Salvata! ${Math.floor(sec/60)}m ${sec%60}s · ${senoLabel(curSeno)}`);}
 function tickTimer(){const tot=elapsedMs+(Date.now()-startTime);const s=Math.floor(tot/1000),m=Math.floor(s/60);document.getElementById('timerDisplay').textContent=String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
 
-function renderGuidaPreview(){const age=getAge(PROFILO.nascita);const key=getGuidaKey(age.weeks);const data=GUIDA[key]||GUIDA[12];const nome=PROFILO.nome;const chips=SMETA.slice(0,2).map(m=>{const tmp=document.createElement('div');tmp.innerHTML=fillN(data[m.key]||'',nome);const txt=tmp.textContent.trim().split('.')[0]+'.';return`<div class="gp-chip"><div class="gp-chip-icon">${m.icon}</div><div class="gp-chip-text"><strong>${m.label}</strong>${txt}</div></div>`;}).join('');document.getElementById('guidaPreview').innerHTML=`<div class="gp-header"><div class="gp-title">${keyLabel(key)}</div><div class="gp-age">${age.label}</div></div><div class="gp-body">${chips}</div><span class="gp-more" onclick="showPage('guida')">Guida completa →</span>`;}
-window.changeWeek=function(d){guidaIdx=Math.max(0,Math.min(ALL_KEYS.length-1,guidaIdx+d));_renderGuidaAt();};
-function renderGuida(){const age=getAge(PROFILO.nascita);const curKey=getGuidaKey(age.weeks);if(guidaIdx===-1)guidaIdx=Math.max(0,ALL_KEYS.indexOf(curKey));_renderGuidaAt();}
-function _renderGuidaAt(){const key=ALL_KEYS[guidaIdx];const data=GUIDA[key]||GUIDA[12];const age=getAge(PROFILO.nascita);const curKey=getGuidaKey(age.weeks);const nome=PROFILO.nome;document.getElementById('navLabel').textContent=keyLabel(key);document.getElementById('navSub').textContent=keyDates(key,PROFILO.nascita);document.getElementById('navPrev').disabled=guidaIdx===0;document.getElementById('navNext').disabled=guidaIdx===ALL_KEYS.length-1;const isCur=key===curKey;let html='';if(isCur)html+=`<div style="text-align:center"><span style="background:rgba(126,184,153,.15);color:var(--green);border:1px solid rgba(126,184,153,.25);padding:3px 12px;border-radius:20px;font-size:11px;letter-spacing:.08em">✦ Settimana attuale di ${nome}</span></div>`;SMETA.forEach((m,i)=>{const content=fillN(data[m.key]||'<p>In arrivo.</p>',nome);const op=i===0?'open':'';html+=`<div class="g-section"><div class="g-sec-hdr ${op}" onclick="toggleSec(this)"><span class="g-sec-icon">${m.icon}</span><span class="g-sec-title">${m.label}</span><span class="g-sec-arrow ${op}">▾</span></div><div class="g-sec-body ${op}">${content}</div></div>`;});document.getElementById('guidaSections').innerHTML=html;}
-window.toggleSec=function(hdr){const body=hdr.nextElementSibling;const arrow=hdr.querySelector('.g-sec-arrow');const open=body.classList.contains('open');body.classList.toggle('open',!open);arrow.classList.toggle('open',!open);hdr.classList.toggle('open',!open);};
+// ── GUIDA ────────────────────────────────────────────
 
-async function renderLog(){const el=document.getElementById('logList');el.innerHTML='<div class="empty"><span class="icon">⏳</span>Caricamento…</div>';let log=[];try{log=await getEntries();}catch(e){el.innerHTML='<div class="empty">Errore caricamento.</div>';return;}if(!log.length){el.innerHTML='<div class="empty"><span class="icon">📋</span>Nessuna poppata ancora.</div>';return;}const grp={};log.forEach(e=>{const k=new Date(e.startISO).toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});if(!grp[k])grp[k]=[];grp[k].push(e);});let html='';for(const[date,entries]of Object.entries(grp)){html+=`<div class="stitle">${date} · ${entries.length}</div>`;entries.forEach(e=>{const m=Math.floor(e.durSec/60),s=e.durSec%60;const dur=m>0?`${m}m ${s}s`:`${s}s`;const sb=e.seno==='S'?'badge-s':e.seno==='D'?'badge-d':'badge-sd';html+=`<div class="log-item"><div><div class="log-main">${fmtTime(new Date(e.startISO))} → ${fmtTime(new Date(e.end))}</div><div class="log-sub">${e.note||'—'}</div><div class="log-badges"><span class="log-badge ${sb}">${senoLabel(e.seno)}</span><span class="log-badge badge-${e.tipo}">${e.tipo}</span></div></div><div><div class="log-dur">${dur}</div><button class="log-del" onclick="delEntry('${e._id}')">✕</button></div></div>`;});}el.innerHTML=html;}
-window.delEntry=async function(id){try{await deleteEntry(id);renderLog();updateHeader();toast('Eliminata');}catch(e){toast('Errore');}};
+// ── PESO ─────────────────────────────────────────────
+function renderPesoCard(){
+  if(!pesoCache.length){
+    document.getElementById('pesoDisplay').innerHTML='— <span>g</span>';
+    document.getElementById('pesoDataDisplay').textContent='nessuna pesata registrata';
+    return;
+  }
+  const last=pesoCache[0];
+  document.getElementById('pesoDisplay').innerHTML=last.grammi+' <span>g</span>';
+  const d=new Date(last.data+'T00:00:00');
+  document.getElementById('pesoDataDisplay').textContent='pesato il '+d.toLocaleDateString('it-IT',{day:'numeric',month:'long'});
+}
+function renderPesoHistory(){
+  const el=document.getElementById('pesoHistory');
+  if(!pesoCache.length){el.innerHTML='<div class="empty" style="padding:20px">Nessuna pesata registrata.</div>';return;}
+  const sorted=[...pesoCache].sort((a,b)=>b.data.localeCompare(a.data));
+  el.innerHTML=sorted.map((p,i)=>{
+    const d=new Date(p.data+'T00:00:00');
+    const dateStr=d.toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
+    let deltaHtml='';
+    if(i<sorted.length-1){
+      const prev=sorted[i+1];
+      const diff=p.grammi-prev.grammi;
+      const cls=diff>=0?'delta-pos':'delta-neg';
+      const sign=diff>=0?'+':'';
+      deltaHtml=`<span class="peso-hist-delta ${cls}">${sign}${diff} g</span>`;
+    }
+    return`<div class="peso-hist-item">
+      <div class="peso-hist-left">
+        <div class="peso-hist-g">${p.grammi} g</div>
+        <div class="peso-hist-date">${dateStr}</div>
+      </div>
+      <div class="peso-hist-right">
+        ${deltaHtml}
+        <button class="peso-hist-del" onclick="delPeso('${p.id}')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+window.apriModalPeso=function(){
+  const today=new Date().toISOString().slice(0,10);
+  document.getElementById('pesoData').value=today;
+  document.getElementById('pesoInput').value='';
+  document.getElementById('modalPeso').classList.add('open');
+  setTimeout(()=>document.getElementById('pesoInput').focus(),100);
+};
+window.chiudiModalPeso=function(){document.getElementById('modalPeso').classList.remove('open');};
+window.salvaPeso=async function(){
+  const g=parseInt(document.getElementById('pesoInput').value);
+  const data=document.getElementById('pesoData').value;
+  if(!g||g<500||g>20000){toast('Inserisci un peso valido in grammi');return;}
+  if(!data){toast('Inserisci la data della pesata');return;}
+  const entry={id:Date.now(),grammi:g,data};
+  setSyncing();
+  await setDoc(pesoDoc(entry.id),entry);
+  chiudiModalPeso();
+  toast(`Peso salvato: ${g} g`);
+};
+window.delPeso=async function(id){
+  if(confirm('Eliminare questa pesata?')){setSyncing();await deleteDoc(pesoDoc(id));toast('Eliminata');}
+};
+function renderGuidaPreview(){const age=getAge();if(!age)return;const key=getGuidaKey(age.weeks);const data=GUIDA[key]||GUIDA[12];const previewKeys=['allattamento','feci'];const chips=previewKeys.map(k=>{const meta=SMETA.find(m=>m.key===k);const tmp=document.createElement('div');tmp.innerHTML=data[k]||'';const txt=tmp.textContent.trim().split('.')[0]+'.';return`<div class="gp-chip"><div class="gp-chip-icon">${meta.icon}</div><div class="gp-chip-text"><strong>${meta.label}</strong>${txt}</div></div>`;}).join('');document.getElementById('guidaPreview').innerHTML=`<div class="gp-header"><div class="gp-title">${keyLabel(key)}</div><div class="gp-age">${age.label}</div></div><div class="gp-body">${chips}</div><span class="gp-more" onclick="showPage('guida')">Guida completa →</span>`;}
+function renderGuida(){const age=getAge();if(!age)return;const curKey=getGuidaKey(age.weeks);if(guidaIdx===-1)guidaIdx=Math.max(0,ALL_KEYS.indexOf(curKey));_renderGuidaAt();}
+function changeWeek(d){guidaIdx=Math.max(0,Math.min(ALL_KEYS.length-1,guidaIdx+d));_renderGuidaAt();}
+function _renderGuidaAt(){const key=ALL_KEYS[guidaIdx];const data=GUIDA[key]||GUIDA[12];const age=getAge();const curKey=age?getGuidaKey(age.weeks):null;document.getElementById('navLabel').textContent=keyLabel(key);document.getElementById('navSub').textContent=keyDates(key);document.getElementById('navPrev').disabled=guidaIdx===0;document.getElementById('navNext').disabled=guidaIdx===ALL_KEYS.length-1;let html='';if(key===curKey)html+=`<div style="text-align:center"><span style="background:rgba(126,184,153,.15);color:var(--green);border:1px solid rgba(126,184,153,.25);padding:3px 12px;border-radius:20px;font-size:11px">✦ Settimana attuale</span></div>`;SMETA.forEach((m,i)=>{const op=i===0?'open':'';html+=`<div class="g-section"><div class="g-sec-hdr ${op}" onclick="toggleSec(this)"><span class="g-sec-icon">${m.icon}</span><span class="g-sec-title">${m.label}</span><span class="g-sec-arrow ${op}">▾</span></div><div class="g-sec-body ${op}">${data[m.key]||'<p>In arrivo.</p>'}</div></div>`;});document.getElementById('guidaSections').innerHTML=html;}
+function toggleSec(hdr){const body=hdr.nextElementSibling,arrow=hdr.querySelector('.g-sec-arrow'),open=body.classList.contains('open');body.classList.toggle('open',!open);arrow.classList.toggle('open',!open);hdr.classList.toggle('open',!open);}
 
-async function renderStats(){let log=[];try{log=await getEntries();}catch(e){}const today=new Date().toDateString();const tod=log.filter(e=>new Date(e.startISO).toDateString()===today);const pop=tod.filter(e=>e.tipo==='poppata');document.getElementById('statCount').textContent=tod.length;document.getElementById('statAvg').textContent=pop.length?Math.round(pop.reduce((a,e)=>a+e.durSec,0)/pop.length/60):'—';if(log.length){const diff=(Date.now()-new Date(log[0].end).getTime())/60000;document.getElementById('statLast').textContent=diff<60?`${Math.round(diff)}m`:`${Math.round(diff/60)}h`;}const sC={S:0,D:0,SD:0};tod.forEach(e=>sC[e.seno]++);const ms=Object.entries(sC).sort((a,b)=>b[1]-a[1])[0];document.getElementById('statSeno').textContent=ms[1]>0?senoLabel(ms[0]):'—';const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push({label:d.toLocaleDateString('it-IT',{weekday:'short'}),count:log.filter(e=>new Date(e.startISO).toDateString()===d.toDateString()).length});}const mx=Math.max(...days.map(d=>d.count),1);document.getElementById('weekChart').innerHTML=days.map(d=>`<div class="bar-item"><div class="bar-lbl">${d.label}</div><div class="bar-track"><div class="bar-fill" style="width:${(d.count/mx*100).toFixed(0)}%"></div></div><div class="bar-cnt">${d.count}</div></div>`).join('');}
+// ── LOG ──────────────────────────────────────────────
+function renderLog(){
+  const all=[...logCache.map(e=>({...e,_tipo:'poppata_entry'})),...pannoliniCache.map(e=>({...e,_tipo:'pann_entry'}))].sort((a,b)=>new Date(b.startISO||b.ts)-new Date(a.startISO||a.ts));
+  const el=document.getElementById('logList');
+  if(!all.length){el.innerHTML='<div class="empty"><span class="icon">📋</span>Nessun dato ancora.</div>';return;}
+  const grp={};
+  all.forEach(e=>{const dt=new Date(e.startISO||e.ts);const k=dt.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});if(!grp[k])grp[k]=[];grp[k].push(e);});
+  let html='';
+  for(const[date,entries]of Object.entries(grp)){
+    html+=`<div class="stitle">${date} · ${entries.length}</div>`;
+    entries.forEach(e=>{
+      if(e._tipo==='poppata_entry'){
+        const m=Math.floor(e.durSec/60),s=e.durSec%60;const dur=m>0?`${m}m ${s}s`:`${s}s`;
+        const sb=e.seno==='S'?'badge-s':e.seno==='D'?'badge-d':'badge-sd';
+        html+=`<div class="log-item"><div><div class="log-main">${fmtTime(new Date(e.startISO))} → ${fmtTime(new Date(e.end))}</div><div class="log-sub">${e.note||'—'}</div><div class="log-badges"><span class="log-badge ${sb}">${senoLabel(e.seno)}</span><span class="log-badge badge-${e.tipo}">${e.tipo}</span></div></div><div><div class="log-dur">${dur}</div><button class="log-del" onclick="delEntry(${e.id})">✕</button></div></div>`;
+      } else {
+        const icon=e.tipo==='pipi'?'💧':'💩';
+        const badge=e.tipo==='pipi'?'badge-pipi':'badge-cacca';
+        let sub='';
+        if(e.tipo==='cacca'){
+          const colInfo=COLORI.find(c=>c.id===e.colore);
+          sub=[e.quant,e.cons,colInfo?colInfo.label:''].filter(Boolean).join(' · ');
+          if(e.note)sub+=(sub?' · ':'')+e.note;
+        }
+        html+=`<div class="log-item"><div><div class="log-main">${icon} ${fmtTime(new Date(e.ts))}</div><div class="log-sub">${sub||'—'}</div><div class="log-badges"><span class="log-badge ${badge}">${e.tipo}</span></div></div><div><button class="log-del" onclick="delPann(${e.id})">✕</button></div></div>`;
+      }
+    });
+  }
+  el.innerHTML=html;
+}
+window.delEntry=id=>removeEntry(id);
+window.delPann=id=>removePann(id).then(()=>toast('Eliminato'));
 
-function renderProfilo(){const age=getAge(PROFILO.nascita);const avatar=PROFILO.sesso==='F'?'👧':'👦';const nascitaFmt=new Date(PROFILO.nascita+'T00:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});document.getElementById('profiloCard').innerHTML=`<div class="profilo-avatar">${avatar}</div><div class="profilo-name">${PROFILO.nome}</div><div class="profilo-row"><span>Data di nascita</span><strong>${nascitaFmt}</strong></div><div class="profilo-row"><span>Età attuale</span><strong>${age.label}</strong></div><div class="profilo-row"><span>Giorni di vita</span><strong>${age.days}</strong></div><div class="profilo-row"><span>Sesso</span><strong>${PROFILO.sesso==='F'?'Femmina':'Maschio'}</strong></div>`;}
-window.resetProfilo=function(){if(confirm(`Cancellare il profilo di ${PROFILO.nome} e ricominciare?\n\nI dati delle poppate rimarranno su Firebase.`)){localStorage.removeItem('poppapp_device_id');location.reload();}};
+// ── STATS ────────────────────────────────────────────
+function renderStats(){renderPesoHistory();
+  // tipo breakdown
+  const totAll=logCache.length;
+  const totPop=logCache.filter(e=>e.tipo==='poppata').length;
+  const totCocc=logCache.filter(e=>e.tipo==='coccola').length;
+  const totPopPerc=totAll>0?Math.round(totPop/totAll*100):0;
+  const totCoccPerc=totAll>0?Math.round(totCocc/totAll*100):0;
+  // today breakdown
+  const todAll=tod.length;
+  const todPop=tod.filter(e=>e.tipo==='poppata').length;
+  const todCocc=tod.filter(e=>e.tipo==='coccola').length;
+  const todPopPerc=todAll>0?Math.round(todPop/todAll*100):0;
+  const todCoccPerc=todAll>0?Math.round(todCocc/todAll*100):0;
+  const tipoEl=document.getElementById('tipoBreakdown');
+  if(tipoEl) tipoEl.innerHTML=`
+    <div class="stitle" style="margin-bottom:0">Poppate vs Coccole</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:0">
+      <div class="stat-card">
+        <div class="stat-label">🍼 Poppate oggi</div>
+        <div class="stat-value">${todPop}</div>
+        <div class="stat-unit">${todPopPerc}% del totale</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">🫂 Coccole oggi</div>
+        <div class="stat-value">${todCocc}</div>
+        <div class="stat-unit">${todCoccPerc}% del totale</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">🍼 Poppate totali</div>
+        <div class="stat-value">${totPop}</div>
+        <div class="stat-unit">${totPopPerc}% di tutte</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">🫂 Coccole totali</div>
+        <div class="stat-value">${totCocc}</div>
+        <div class="stat-unit">${totCoccPerc}% di tutte</div>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 15px">
+      <div style="display:flex;height:10px;border-radius:6px;overflow:hidden;gap:2px">
+        <div style="background:var(--green);width:${todPopPerc}%;transition:width .5s;border-radius:6px 0 0 6px"></div>
+        <div style="background:rgba(232,184,122,.6);width:${todCoccPerc}%;transition:width .5s;border-radius:0 6px 6px 0"></div>
+      </div>
+      <div style="display:flex;gap:16px;margin-top:8px;font-size:11px;color:var(--muted)">
+        <span><span style="color:var(--green)">■</span> Poppate ${todPopPerc}%</span>
+        <span><span style="color:#e8b87a">■</span> Coccole ${todCoccPerc}%</span>
+        <span style="margin-left:auto">${todAll} totali oggi</span>
+      </div>
+    </div>`;
 
-async function updateHeader(){const age=getAge(PROFILO.nascita);document.getElementById('agePill').textContent=age.label;document.getElementById('headerName').textContent=PROFILO.nome+' 🌙';try{const log=await getEntries();const today=new Date().toDateString();document.getElementById('countToday').textContent=log.filter(e=>new Date(e.startISO).toDateString()===today).length;document.getElementById('lastTime').textContent=log.length?fmtTime(new Date(log[0].end)):'—';}catch(e){}}
+  const log=logCache,today=new Date().toDateString();
+  const tod=log.filter(e=>new Date(e.startISO).toDateString()===today);
+  const pop=tod.filter(e=>e.tipo==='poppata');
+  document.getElementById('statCount').textContent=tod.length;
+  document.getElementById('statAvg').textContent=pop.length?Math.round(pop.reduce((a,e)=>a+e.durSec,0)/pop.length/60):'—';
+  if(log.length){const diff=(Date.now()-new Date(log[0].end).getTime())/60000;document.getElementById('statLast').textContent=diff<60?`${Math.round(diff)}m`:`${Math.round(diff/60)}h`;}
+  const sC={S:0,D:0,SD:0};tod.forEach(e=>sC[e.seno]++);const ms=Object.entries(sC).sort((a,b)=>b[1]-a[1])[0];document.getElementById('statSeno').textContent=ms[1]>0?senoLabel(ms[0]):'—';
 
-window.showPage=function(name){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.tab')[['timer','guida','log','stats','profilo'].indexOf(name)].classList.add('active');if(name==='log')renderLog();if(name==='stats')renderStats();if(name==='guida')renderGuida();if(name==='profilo')renderProfilo();};
+  // pannolini stats oggi
+  const pp=todayPann();const pipiN=pp.filter(p=>p.tipo==='pipi').length;const caccaN=pp.filter(p=>p.tipo==='cacca').length;
+  const lastCacca=pp.filter(p=>p.tipo==='cacca')[0];
+  const colInfo=lastCacca?COLORI.find(c=>c.id===lastCacca.colore):null;
+  document.getElementById('pannoliniStats').innerHTML=`
+    <div class="ps-row"><span class="ps-label">💧 Pipì oggi</span><span class="ps-val">${pipiN}</span></div>
+    <div class="ps-row"><span class="ps-label">💩 Cacca oggi</span><span class="ps-val">${caccaN}</span></div>
+    ${lastCacca?`<div class="ps-row"><span class="ps-label">Ultima cacca</span><span style="color:var(--text);font-size:12px">${fmtTime(new Date(lastCacca.ts))} · ${lastCacca.quant||''} · ${lastCacca.cons||''}<br>${colInfo?`<span style="display:inline-flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:${colInfo.hex};display:inline-block"></span>${colInfo.label}</span>`:''}</span></div>`:''}`;
 
-window.exportCSV=async function(){try{const log=await getEntries();if(!log.length){toast('Nessun dato');return;}const rows=['Inizio,Fine,Durata (sec),Seno,Tipo,Note'];log.forEach(e=>rows.push([e.startISO,e.end,e.durSec,e.seno,e.tipo,`"${(e.note||'').replace(/"/g,'""')}"`].join(',')));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([rows.join('\n')],{type:'text/csv'}));a.download=`${PROFILO.nome}_poppate_${new Date().toISOString().slice(0,10)}.csv`;a.click();toast('CSV scaricato!');}catch(e){toast('Errore export');}};
+  // bar charts
+  const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toDateString();days.push({label:d.toLocaleDateString('it-IT',{weekday:'short'}),pop:log.filter(e=>new Date(e.startISO).toDateString()===ds).length,pipi:pannoliniCache.filter(p=>new Date(p.ts).toDateString()===ds&&p.tipo==='pipi').length,cacca:pannoliniCache.filter(p=>new Date(p.ts).toDateString()===ds&&p.tipo==='cacca').length});}
+  const mxP=Math.max(...days.map(d=>d.pop),1);
+  document.getElementById('weekChart').innerHTML=days.map(d=>`<div class="bar-item"><div class="bar-lbl">${d.label}</div><div class="bar-track"><div class="bar-fill" style="width:${(d.pop/mxP*100).toFixed(0)}%"></div></div><div class="bar-cnt">${d.pop}</div></div>`).join('');
+  const mxPann=Math.max(...days.map(d=>Math.max(d.pipi,d.cacca)),1);
+  document.getElementById('weekPannolini').innerHTML=days.map(d=>`
+    <div class="bar-item"><div class="bar-lbl">${d.label}</div><div style="flex:1;display:flex;flex-direction:column;gap:3px">
+      <div class="bar-track"><div class="bar-fill" style="width:${(d.pipi/mxPann*100).toFixed(0)}%"></div></div>
+      <div class="bar-track"><div class="bar-fill blue" style="width:${(d.cacca/mxPann*100).toFixed(0)}%"></div></div>
+    </div><div style="text-align:right;font-size:10px;color:var(--muted);width:28px">${d.pipi}💧<br>${d.cacca}💩</div></div>`).join('');
+}
 
-function initApp(){hideLoading();document.getElementById('app').classList.remove('hidden');updateHeader();renderGuidaPreview();}
+// ── PROFILO ──────────────────────────────────────────
+function renderProfilo(){if(!profilo)return;const birth=getBirth();const age=getAge();const emoji=profilo.sesso==='f'?'👧':'👦';document.getElementById('profileCard').innerHTML=`<div class="profile-avatar">${emoji}</div><div class="profile-name">${profilo.nome}</div><div class="profile-row">Data di nascita <span>${birth.toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'})}</span></div><div class="profile-row">Sesso <span>${profilo.sesso==='f'?'Femmina 👧':'Maschio 👦'}</span></div><div class="profile-row">Età <span>${age?age.label:'—'}</span></div><div class="profile-row">Poppate totali <span>${logCache.length}</span></div><div class="profile-row">Pannolini totali <span>${pannoliniCache.length}</span></div>`;}
 
-(async()=>{showLoading();try{PROFILO=await loadProfilo();if(PROFILO){initApp();}else{hideLoading();document.getElementById('onboarding').classList.remove('hidden');document.getElementById('obData').value='';}}catch(e){hideLoading();document.getElementById('onboarding').classList.remove('hidden');document.getElementById('obData').value='';}})();
+// ── HEADER ───────────────────────────────────────────
+function updateHeader(){const age=getAge();if(age)document.getElementById('agePill').textContent=age.label;if(profilo)document.getElementById('appBrandName').textContent=profilo.nome+' 🌙';const today=new Date().toDateString();document.getElementById('countToday').textContent=logCache.filter(e=>new Date(e.startISO).toDateString()===today).length;document.getElementById('lastTime').textContent=logCache.length?fmtTime(new Date(logCache[0].end)):'—';}
+
+// ── ONBOARDING ────────────────────────────────────────
+let obSex='';
+window.setSex=s=>{obSex=s;document.getElementById('sex-f').classList.toggle('active',s==='f');document.getElementById('sex-m').classList.toggle('active',s==='m');};
+window.salvaOnboarding=async()=>{const nome=document.getElementById('ob-nome').value.trim(),data=document.getElementById('ob-data').value,err=document.getElementById('ob-err');if(!nome){err.textContent='Inserisci il nome del bambino.';return;}if(!obSex){err.textContent='Seleziona il sesso.';return;}if(!data){err.textContent='Inserisci la data di nascita.';return;}err.textContent='';try{await saveProfilo({nome,sesso:obSex,nascita:data});document.getElementById('onboarding').style.display='none';initApp();}catch(e){err.textContent='Errore di connessione. Riprova.';}};
+window.resetProfilo=()=>{if(confirm('Modificare il profilo?')){document.getElementById('app').style.display='none';document.getElementById('ob-nome').value=profilo?.nome||'';obSex=profilo?.sesso||'';document.getElementById('sex-f').classList.toggle('active',obSex==='f');document.getElementById('sex-m').classList.toggle('active',obSex==='m');document.getElementById('ob-data').value=profilo?.nascita||'';document.getElementById('onboarding').style.display='flex';}};
+
+// ── NAV ──────────────────────────────────────────────
+window.showPage=name=>{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.tab')[['timer','guida','log','stats','profilo'].indexOf(name)].classList.add('active');if(name==='log')renderLog();if(name==='stats')renderStats();if(name==='guida')renderGuida();if(name==='profilo')renderProfilo();};
+
+// ── EXPORT & CLEAR ────────────────────────────────────
+window.exportCSV=()=>{const rows=['Tipo,Inizio,Fine,Durata(sec),Seno,PoppTipo,Quantità,Consistenza,Colore,Note'];logCache.forEach(e=>rows.push(['poppata',e.startISO,e.end,e.durSec,e.seno,e.tipo,'','','',`"${(e.note||'').replace(/"/g,'""')}"`].join(',')));pannoliniCache.forEach(e=>rows.push([e.tipo,e.ts,'','','','',e.quant||'',e.cons||'',e.colore||'',`"${(e.note||'').replace(/"/g,'""')}"`].join(',')));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([rows.join('\n')],{type:'text/csv'}));a.download=`${profilo?.nome||'poppapp'}_${new Date().toISOString().slice(0,10)}.csv`;a.click();toast('CSV scaricato!');};
+window.clearAll=async()=>{if(confirm('Cancellare tutti i dati?')){for(const e of logCache)await deleteDoc(poppataDoc(e.id));for(const p of pannoliniCache)await deleteDoc(pannolDoc(p.id));for(const p of pesoCache)await deleteDoc(pesoDoc(p.id));toast('Dati cancellati');}};
+
+// ── UTILS ────────────────────────────────────────────
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500);}
+window.startTimer=startTimer;window.pauseTimer=pauseTimer;window.resumeTimer=resumeTimer;window.stopTimer=stopTimer;
+window.setSeno=setSeno;window.setTipo=setTipo;window.changeWeek=changeWeek;window.toggleSec=toggleSec;
+
+// ── INIT ─────────────────────────────────────────────
+function initApp(){document.getElementById('app').style.display='flex';buildColoriGrid();updateHeader();renderGuidaPreview();startLogListener();}
+
+async function boot(){
+  const ok=await loadProfilo();
+  document.getElementById('loading').style.display='none';
+  if(ok)initApp();
+  else document.getElementById('onboarding').style.display='flex';
+}
+boot();
 </script>
 </body>
 </html>
