@@ -128,6 +128,48 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 .kpi-value{font-size:42px;font-weight:300;line-height:1;color:var(--text)}
 .kpi-unit{font-size:12px;color:var(--muted)}
 .kpi-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+
+/* ── CONDIVIDI ──────────────────────────────────────── */
+.share-row{display:flex;gap:8px}
+.share-btn{flex:1;padding:13px 8px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;transition:all .2s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:5px}
+.share-btn:active{opacity:.7;transform:scale(.97)}
+.share-btn .share-icon{font-size:22px}
+.share-btn .share-label{font-size:10px;letter-spacing:.06em;color:var(--muted)}
+#modalImport{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:none;align-items:flex-end;justify-content:center;padding-bottom:var(--safe-bot)}
+#modalImport.open{display:flex}
+.import-drop{border:2px dashed var(--border);border-radius:14px;padding:28px;text-align:center;cursor:pointer;transition:border-color .2s;color:var(--muted);font-size:13px}
+.import-drop:hover{border-color:var(--accent);color:var(--text)}
+.import-preview{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;font-size:12px;color:var(--muted);max-height:140px;overflow-y:auto;display:none}
+/* ── MODALITÀ BIBERON ───────────────────────────────── */
+.mode-switch{display:flex;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 16px;flex-shrink:0}
+.mode-switch-label{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.mode-switch-label strong{color:var(--text);font-size:13px}
+.toggle{position:relative;width:44px;height:24px;cursor:pointer}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--surface2);border:1px solid var(--border);border-radius:12px;transition:.2s}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;background:var(--muted);border-radius:50%;transition:.2s}
+.toggle input:checked + .toggle-slider{background:rgba(200,184,162,.2);border-color:var(--accent)}
+.toggle input:checked + .toggle-slider:before{transform:translateX(20px);background:var(--accent)}
+.biberon-ml{display:none;flex-direction:column;gap:8px;width:100%}
+.biberon-ml.active{display:flex}
+.ml-row{display:flex;gap:8px}
+.ml-input-group{flex:1;display:flex;flex-direction:column;gap:4px}
+.ml-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.ml-input{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;color:var(--text);font-family:'DM Mono',monospace;font-size:15px;outline:none;width:100%;text-align:center;transition:border-color .2s}
+.ml-input:focus{border-color:rgba(200,184,162,.4)}
+.ml-input::placeholder{color:var(--muted)}
+/* ── LOG FILTRI & EDIT ──────────────────────────────── */
+.log-filter-row{display:flex;gap:8px;flex-shrink:0;overflow-x:auto;padding-bottom:2px}
+.log-filter-row::-webkit-scrollbar{height:0}
+.filter-btn{padding:7px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.filter-btn.active{border-color:var(--accent);background:rgba(200,184,162,.1);color:var(--text)}
+.log-edit-btn{background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;padding:2px 4px;letter-spacing:.04em;font-family:'DM Mono',monospace}
+/* ── MODAL ENTRY (add/edit) ─────────────────────────── */
+#modalEntry{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:none;align-items:flex-end;justify-content:center;padding-bottom:var(--safe-bot)}
+#modalEntry.open{display:flex}
+.modal-sheet-tall{background:var(--surface);border-radius:20px 20px 0 0;padding:20px 18px 28px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:12px;max-height:90vh;overflow-y:auto}
+.modal-2col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 /* ── PESO CARD ───────────────────────────────────────── */
 /* ── DISCLAIMER CARD ─────────────────────────────────── */
 
@@ -309,6 +351,67 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
     <button class="modal-cancel" onclick="document.getElementById('modalInfo').style.display='none'">Chiudi</button>
   </div>
 </div>
+<div id="modalEntry">
+  <div class="modal-sheet-tall">
+    <div class="modal-title" id="entryModalTitle">Aggiungi poppata</div>
+    <input type="hidden" id="entryId">
+    <div class="modal-section">
+      <div class="modal-label">Modalità</div>
+      <div style="display:flex;gap:8px">
+        <button class="filter-btn active" id="entry-mode-seno" onclick="setEntryMode('seno')">🤱 Seno</button>
+        <button class="filter-btn" id="entry-mode-biberon" onclick="setEntryMode('biberon')">🍼 Biberon</button>
+      </div>
+    </div>
+    <div class="modal-section" id="entrySenoSection">
+      <div class="modal-label">Seno</div>
+      <div class="seno-row">
+        <button class="seno-btn active" id="entry-btn-S" onclick="setEntrySeno('S')"><span class="icon">◀</span>Sinistro</button>
+        <button class="seno-btn" id="entry-btn-D" onclick="setEntrySeno('D')"><span class="icon">▶</span>Destro</button>
+        <button class="seno-btn" id="entry-btn-SD" onclick="setEntrySeno('SD')"><span class="icon">◀▶</span>Entrambi</button>
+      </div>
+    </div>
+    <div class="modal-section" id="entryMlSection" style="display:none">
+      <div class="modal-label">Millilitri</div>
+      <div class="ml-row">
+        <div class="ml-input-group">
+          <div class="ml-label">🤱 Latte materno (ml)</div>
+          <input type="number" class="ml-input" id="entryMlMaterno" placeholder="—" min="0" max="500" inputmode="numeric">
+        </div>
+        <div class="ml-input-group">
+          <div class="ml-label">🥛 Artificiale (ml)</div>
+          <input type="number" class="ml-input" id="entryMlArt" placeholder="—" min="0" max="500" inputmode="numeric">
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">Tipo</div>
+      <div class="tipo-row">
+        <button class="tipo-btn active" id="entry-tipo-poppata" onclick="setEntryTipo('poppata')"><span class="icon">🍼</span>Poppata</button>
+        <button class="tipo-btn" id="entry-tipo-coccola" onclick="setEntryTipo('coccola')"><span class="icon">🫂</span>Coccola</button>
+      </div>
+    </div>
+    <div class="modal-2col">
+      <div class="modal-section">
+        <div class="modal-label">Data</div>
+        <input type="date" class="field-input" id="entryData" style="color-scheme:dark">
+      </div>
+      <div class="modal-section">
+        <div class="modal-label">Ora inizio</div>
+        <input type="time" class="field-input" id="entryOraInizio" style="color-scheme:dark">
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">Ora fine (opzionale)</div>
+      <input type="time" class="field-input" id="entryOraFine" style="color-scheme:dark" placeholder="—">
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">Note</div>
+      <textarea class="modal-note" id="entryNote" placeholder="Note opzionali…"></textarea>
+    </div>
+    <button class="modal-save" onclick="salvaEntry()">Salva</button>
+    <button class="modal-cancel" onclick="chiudiModalEntry()">Annulla</button>
+  </div>
+</div>
 <div id="modalCacca">
   <div class="modal-sheet">
     <div class="modal-title">💩 Registra cacca</div>
@@ -355,7 +458,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 
 <div id="app">
   <header>
-    <div><div style="display:flex;align-items:center;gap:8px"><div class="brand-name" id="appBrandName">Poppapp</div><span style="font-size:10px;letter-spacing:.08em;background:rgba(200,184,162,.15);color:var(--accent);border:1px solid rgba(200,184,162,.3);padding:2px 7px;border-radius:20px;font-family:'DM Mono',monospace">v0.4.1</span></div><div class="brand-sub">diario di allattamento</div></div>
+    <div><div style="display:flex;align-items:center;gap:8px"><div class="brand-name" id="appBrandName">Poppapp</div><span style="font-size:10px;letter-spacing:.08em;background:rgba(200,184,162,.15);color:var(--accent);border:1px solid rgba(200,184,162,.3);padding:2px 7px;border-radius:20px;font-family:'DM Mono',monospace">v0.6.0</span></div><div class="brand-sub">diario di allattamento</div></div>
     <div class="hdr-right">
       <div><span class="age-pill" id="agePill">—</span></div>
       <div style="margin-top:4px">oggi <strong id="countToday">0</strong> · ultima <strong id="lastTime">—</strong></div>
@@ -373,10 +476,25 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 
   <!-- TIMER -->
   <div class="page active" id="page-timer">
+    <!-- Modalità switch -->
+    <div class="mode-switch">
+      <div class="mode-switch-label">
+        <span id="modeIcon">🤱</span>
+        <div><strong id="modeLabel">Seno</strong><br><span style="font-size:10px">modalità attiva</span></div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="modeToggle" onchange="toggleMode()">
+        <span class="toggle-slider"></span>
+      </label>
+      <div class="mode-switch-label">
+        <div style="text-align:right"><strong>Biberon</strong><br><span style="font-size:10px">passa alla modalità</span></div>
+        <span>🍼</span>
+      </div>
+    </div>
     <div class="timer-card">
       <div class="timer-display" id="timerDisplay">00:00</div>
       <div class="timer-label" id="timerLabel">pronta per iniziare</div>
-      <div class="seno-row">
+      <div class="seno-row" id="senoRow">
         <button class="seno-btn active" id="btn-S" onclick="setSeno('S')"><span class="icon">◀</span>Sinistro</button>
         <button class="seno-btn" id="btn-D" onclick="setSeno('D')"><span class="icon">▶</span>Destro</button>
         <button class="seno-btn" id="btn-SD" onclick="setSeno('SD')"><span class="icon">◀▶</span>Entrambi</button>
@@ -384,6 +502,19 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
       <div class="tipo-row">
         <button class="tipo-btn active" id="tipo-poppata" onclick="setTipo('poppata')"><span class="icon">🍼</span>Poppata</button>
         <button class="tipo-btn" id="tipo-coccola" onclick="setTipo('coccola')"><span class="icon">🫂</span>Coccola</button>
+      </div>
+      <!-- Biberon ml (visibile solo in modalità biberon) -->
+      <div class="biberon-ml" id="biberonMl">
+        <div class="ml-row">
+          <div class="ml-input-group">
+            <div class="ml-label">🤱 Latte materno (ml)</div>
+            <input type="number" class="ml-input" id="mlMaterno" placeholder="—" min="0" max="500" inputmode="numeric">
+          </div>
+          <div class="ml-input-group">
+            <div class="ml-label">🥛 Latte artificiale (ml)</div>
+            <input type="number" class="ml-input" id="mlArtificiale" placeholder="—" min="0" max="500" inputmode="numeric">
+          </div>
+        </div>
       </div>
     </div>
     <div class="session-info" id="sessionInfo" style="display:none">
@@ -454,7 +585,13 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 
   <!-- LOG -->
   <div class="page" id="page-log">
-    <div class="stitle">Registro completo</div>
+    <div class="log-filter-row">
+      <button class="filter-btn active" onclick="setFilter('tutti')">Tutti</button>
+      <button class="filter-btn" onclick="setFilter('poppata')">🤱 Seno</button>
+      <button class="filter-btn" onclick="setFilter('biberon')">🍼 Biberon</button>
+      <button class="filter-btn" onclick="setFilter('coccola')">🫂 Coccola</button>
+    </div>
+    <button class="btn-sec" onclick="apriModalEntry(null)" style="color:var(--accent);border-color:rgba(200,184,162,.3)">+ Aggiungi poppata manuale</button>
     <div class="log-list" id="logList"></div>
   </div>
 
@@ -473,7 +610,26 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
     <div class="bar-row" id="weekPannolini"></div>
     <div class="stitle">⚖️ Storico peso</div>
     <div class="peso-history" id="pesoHistory"></div>
-    <button class="btn-sec" onclick="exportCSV()">⬇ Esporta CSV</button>
+    <div class="stitle">📤 Condividi & Esporta</div>
+    <div class="share-row">
+      <button class="share-btn" onclick="exportCSV()">
+        <span class="share-icon">📊</span>
+        <span>CSV</span>
+        <span class="share-label">esporta dati</span>
+      </button>
+      <button class="share-btn" onclick="exportPDF()">
+        <span class="share-icon">📄</span>
+        <span>PDF</span>
+        <span class="share-label">report pediatra</span>
+      </button>
+      <button class="share-btn" onclick="condividiLink()">
+        <span class="share-icon">🔗</span>
+        <span>Link</span>
+        <span class="share-label">report web</span>
+      </button>
+    </div>
+    <div class="stitle">📥 Importa</div>
+    <button class="btn-sec" onclick="apriModalImport()" style="color:var(--accent2);border-color:rgba(139,158,181,.3)">📥 Importa poppate da CSV</button>
   </div>
 
   <!-- PROFILO -->
@@ -486,6 +642,23 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
   </div>
 </div>
 
+<div id="modalImport">
+  <div class="modal-sheet-tall">
+    <div class="modal-title">📥 Importa poppate da CSV</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.6">
+      Importa un file CSV esportato da Poppapp. Le poppate duplicate (stesso orario) vengono saltate automaticamente.
+    </div>
+    <div class="import-drop" id="importDrop" onclick="document.getElementById('importFile').click()">
+      Tocca per selezionare il file CSV<br>
+      <span style="font-size:11px;margin-top:4px;display:block">oppure trascina qui</span>
+    </div>
+    <input type="file" id="importFile" accept=".csv" style="display:none" onchange="leggiCSV(this)">
+    <div class="import-preview" id="importPreview"></div>
+    <div id="importStatus" style="font-size:12px;color:var(--muted);min-height:16px"></div>
+    <button class="modal-save" id="importSaveBtn" onclick="eseguiImport()" style="display:none">Importa</button>
+    <button class="modal-cancel" onclick="chiudiModalImport()">Annulla</button>
+  </div>
+</div>
 <div id="toast"></div>
 
 <script type="module">
@@ -661,6 +834,18 @@ function keyDates(k){
 
 // ── TIMER ────────────────────────────────────────────
 let timerInt=null,startTime=null,elapsedMs=0,isPaused=false,isRunning=false,curSeno='S',curTipo='poppata';
+let curMode='seno'; // 'seno' | 'biberon'
+let logFilter='tutti'; // filter state
+// ── MODE TOGGLE ───────────────────────────────────────
+function toggleMode(){
+  curMode = document.getElementById('modeToggle').checked ? 'biberon' : 'seno';
+  var isBiberon = curMode === 'biberon';
+  document.getElementById('senoRow').style.display   = isBiberon ? 'none' : 'flex';
+  document.getElementById('biberonMl').classList.toggle('active', isBiberon);
+  document.getElementById('modeIcon').textContent    = isBiberon ? '🍼' : '🤱';
+  document.getElementById('modeLabel').textContent   = isBiberon ? 'Biberon' : 'Seno';
+}
+window.toggleMode = toggleMode;
 function setSeno(s){curSeno=s;['S','D','SD'].forEach(v=>document.getElementById('btn-'+v).classList.toggle('active',v===s));if(isRunning)document.getElementById('infoSeno').textContent=senoLabel(s);}
 function setTipo(t){curTipo=t;['poppata','coccola'].forEach(v=>document.getElementById('tipo-'+v).classList.toggle('active',v===t));if(isRunning)document.getElementById('infoTipo').textContent=cap(t);}
 function senoLabel(s){return s==='S'?'Sinistro':s==='D'?'Destro':'Entrambi';}
@@ -670,7 +855,42 @@ function fmtTime(d){return d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'
 function startTimer(){startTime=Date.now();elapsedMs=0;isPaused=false;isRunning=true;document.getElementById('sessionInfo').style.display='flex';document.getElementById('infoInizio').textContent=fmtTime(new Date());document.getElementById('infoSeno').textContent=senoLabel(curSeno);document.getElementById('infoTipo').textContent=cap(curTipo);timerInt=setInterval(tickTimer,100);document.getElementById('timerDisplay').className='timer-display running';document.getElementById('timerLabel').textContent='in corso…';document.getElementById('btnArea').innerHTML='<div class="btn-row"><button class="btn-main btn-pause" onclick="pauseTimer()">⏸ Pausa</button><button class="btn-main btn-stop" onclick="stopTimer()">⏹ Fine</button></div>';}
 function pauseTimer(){clearInterval(timerInt);elapsedMs+=Date.now()-startTime;isPaused=true;document.getElementById('timerDisplay').className='timer-display paused pulse';document.getElementById('timerLabel').textContent='in pausa';document.getElementById('btnArea').innerHTML='<div class="btn-row"><button class="btn-main btn-start" onclick="resumeTimer()">▶ Riprendi</button><button class="btn-main btn-stop" onclick="stopTimer()">⏹ Fine</button></div>';}
 function resumeTimer(){startTime=Date.now();isPaused=false;timerInt=setInterval(tickTimer,100);document.getElementById('timerDisplay').className='timer-display running';document.getElementById('timerLabel').textContent='in corso…';document.getElementById('btnArea').innerHTML='<div class="btn-row"><button class="btn-main btn-pause" onclick="pauseTimer()">⏸ Pausa</button><button class="btn-main btn-stop" onclick="stopTimer()">⏹ Fine</button></div>';}
-async function stopTimer(){clearInterval(timerInt);if(!isPaused)elapsedMs+=Date.now()-startTime;isRunning=false;isPaused=false;const sec=Math.round(elapsedMs/1000);const endNow=new Date();const entry={id:Date.now(),startISO:new Date(endNow.getTime()-sec*1000).toISOString(),end:endNow.toISOString(),durSec:sec,seno:curSeno,tipo:curTipo,note:document.getElementById('noteField').value.trim()};document.getElementById('timerDisplay').textContent='00:00';document.getElementById('timerDisplay').className='timer-display';document.getElementById('timerLabel').textContent='pronta per iniziare';document.getElementById('sessionInfo').style.display='none';document.getElementById('noteField').value='';document.getElementById('btnArea').innerHTML='<button class="btn-main btn-start" onclick="startTimer()">▶ &nbsp;Inizia poppata</button>';elapsedMs=0;await saveEntry(entry);toast(`Salvata! ${Math.floor(sec/60)}m ${sec%60}s · ${senoLabel(curSeno)}`);}
+async function stopTimer(){
+  clearInterval(timerInt);
+  if(!isPaused)elapsedMs+=Date.now()-startTime;
+  isRunning=false;isPaused=false;
+  const sec=Math.round(elapsedMs/1000);
+  const endNow=new Date();
+  const isBiberon = curMode==='biberon';
+  const mlM = isBiberon ? (parseInt(document.getElementById('mlMaterno').value)||null) : null;
+  const mlA = isBiberon ? (parseInt(document.getElementById('mlArtificiale').value)||null) : null;
+  const entry={
+    id:Date.now(),
+    startISO:new Date(endNow.getTime()-sec*1000).toISOString(),
+    end:endNow.toISOString(),
+    durSec:sec,
+    modalita:curMode,
+    seno:isBiberon?null:curSeno,
+    tipo:curTipo,
+    mlMaterno:mlM,
+    mlArtificiale:mlA,
+    note:document.getElementById('noteField').value.trim()
+  };
+  document.getElementById('timerDisplay').textContent='00:00';
+  document.getElementById('timerDisplay').className='timer-display';
+  document.getElementById('timerLabel').textContent='pronta per iniziare';
+  document.getElementById('sessionInfo').style.display='none';
+  document.getElementById('noteField').value='';
+  document.getElementById('mlMaterno').value='';
+  document.getElementById('mlArtificiale').value='';
+  document.getElementById('btnArea').innerHTML='<button class="btn-main btn-start" onclick="startTimer()">▶ &nbsp;Inizia poppata</button>';
+  elapsedMs=0;
+  await saveEntry(entry);
+  const label = isBiberon
+    ? ('Biberon' + (mlM?(' '+mlM+'ml M'):'') + (mlA?(' '+mlA+'ml A'):''))
+    : senoLabel(curSeno);
+  toast('Salvata! '+Math.floor(sec/60)+'m '+sec%60+'s · '+label);
+}
 function tickTimer(){const tot=elapsedMs+(Date.now()-startTime);const s=Math.floor(tot/1000),m=Math.floor(s/60);document.getElementById('timerDisplay').textContent=String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
 
 // ── GUIDA ────────────────────────────────────────────
@@ -730,6 +950,94 @@ window.showInfo = function(tipo) {
   document.getElementById('infoBody').textContent  = data[tipo].body;
   document.getElementById('modalInfo').style.display = 'flex';
 };
+
+// ── MODAL ENTRY (add / edit) ──────────────────────────
+var entryMode='seno', entrySeno='S', entryTipo='poppata';
+
+function setEntryMode(m){
+  entryMode=m;
+  ['seno','biberon'].forEach(function(v){
+    document.getElementById('entry-mode-'+v).classList.toggle('active',v===m);
+  });
+  document.getElementById('entrySenoSection').style.display = m==='seno'?'flex':'none';
+  document.getElementById('entryMlSection').style.display   = m==='biberon'?'flex':'none';
+}
+function setEntrySeno(s){
+  entrySeno=s;
+  ['S','D','SD'].forEach(function(v){
+    document.getElementById('entry-btn-'+v).classList.toggle('active',v===s);
+  });
+}
+function setEntryTipo(t){
+  entryTipo=t;
+  ['poppata','coccola'].forEach(function(v){
+    document.getElementById('entry-tipo-'+v).classList.toggle('active',v===t);
+  });
+}
+window.setEntryMode=setEntryMode;
+window.setEntrySeno=setEntrySeno;
+window.setEntryTipo=setEntryTipo;
+
+window.apriModalEntry=function(id){
+  var now=new Date();
+  document.getElementById('entryId').value = id||'';
+  document.getElementById('entryModalTitle').textContent = id?'Modifica poppata':'Aggiungi poppata';
+  if(id){
+    // edit mode — find entry
+    var e=logCache.find(function(x){return x.id===id;});
+    if(!e)return;
+    var start=new Date(e.startISO), end=new Date(e.end);
+    setEntryMode(e.modalita==='biberon'?'biberon':'seno');
+    setEntrySeno(e.seno||'S');
+    setEntryTipo(e.tipo||'poppata');
+    document.getElementById('entryData').value      = start.toISOString().slice(0,10);
+    document.getElementById('entryOraInizio').value = start.toTimeString().slice(0,5);
+    document.getElementById('entryOraFine').value   = end.toTimeString().slice(0,5);
+    document.getElementById('entryNote').value      = e.note||'';
+    document.getElementById('entryMlMaterno').value = e.mlMaterno||'';
+    document.getElementById('entryMlArt').value     = e.mlArtificiale||'';
+  } else {
+    // new entry
+    setEntryMode('seno');setEntrySeno('S');setEntryTipo('poppata');
+    document.getElementById('entryData').value      = now.toISOString().slice(0,10);
+    document.getElementById('entryOraInizio').value = now.toTimeString().slice(0,5);
+    document.getElementById('entryOraFine').value   = '';
+    document.getElementById('entryNote').value      = '';
+    document.getElementById('entryMlMaterno').value = '';
+    document.getElementById('entryMlArt').value     = '';
+  }
+  document.getElementById('modalEntry').classList.add('open');
+};
+window.chiudiModalEntry=function(){document.getElementById('modalEntry').classList.remove('open');};
+
+window.salvaEntry=async function(){
+  var data     = document.getElementById('entryData').value;
+  var oraStart = document.getElementById('entryOraInizio').value;
+  var oraEnd   = document.getElementById('entryOraFine').value;
+  var note     = document.getElementById('entryNote').value.trim();
+  var existId  = document.getElementById('entryId').value;
+  if(!data||!oraStart){toast('Inserisci data e ora di inizio');return;}
+  var startISO = new Date(data+'T'+oraStart+':00').toISOString();
+  var endISO   = oraEnd
+    ? new Date(data+'T'+oraEnd+':00').toISOString()
+    : new Date(new Date(data+'T'+oraStart+':00').getTime()+600000).toISOString(); // default +10min
+  var durSec   = Math.max(0, Math.round((new Date(endISO)-new Date(startISO))/1000));
+  var isBib    = entryMode==='biberon';
+  var mlM      = isBib?(parseInt(document.getElementById('entryMlMaterno').value)||null):null;
+  var mlA      = isBib?(parseInt(document.getElementById('entryMlArt').value)||null):null;
+  var entry={
+    id: existId ? parseInt(existId) : Date.now(),
+    startISO, end:endISO, durSec,
+    modalita: entryMode,
+    seno: isBib?null:entrySeno,
+    tipo: entryTipo,
+    mlMaterno:mlM, mlArtificiale:mlA,
+    note
+  };
+  await saveEntry(entry);
+  chiudiModalEntry();
+  toast(existId?'Poppata modificata!':'Poppata aggiunta!');
+};
 window.apriModalPeso=function(){
   const today=new Date().toISOString().slice(0,10);
   document.getElementById('pesoData').value=today;
@@ -759,37 +1067,94 @@ function _renderGuidaAt(){const key=ALL_KEYS[guidaIdx];const data=GUIDA[key]||GU
 function toggleSec(hdr){const body=hdr.nextElementSibling,arrow=hdr.querySelector('.g-sec-arrow'),open=body.classList.contains('open');body.classList.toggle('open',!open);arrow.classList.toggle('open',!open);hdr.classList.toggle('open',!open);}
 
 // ── LOG ──────────────────────────────────────────────
+window.setFilter=function(f){
+  logFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(function(b){
+    var txt=b.textContent.trim().toLowerCase();
+    b.classList.toggle('active',
+      f==='tutti'?txt.includes('tutti'):
+      f==='poppata'?txt.includes('seno'):
+      f==='biberon'?txt.includes('biberon'):
+      txt.includes('coccola'));
+  });
+  renderLog();
+};
+
 function renderLog(){
-  const all=[...logCache.map(e=>({...e,_tipo:'poppata_entry'})),...pannoliniCache.map(e=>({...e,_tipo:'pann_entry'}))].sort((a,b)=>new Date(b.startISO||b.ts)-new Date(a.startISO||a.ts));
-  const el=document.getElementById('logList');
-  if(!all.length){el.innerHTML='<div class="empty"><span class="icon">📋</span>Nessun dato ancora.</div>';return;}
-  const grp={};
-  all.forEach(e=>{const dt=new Date(e.startISO||e.ts);const k=dt.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});if(!grp[k])grp[k]=[];grp[k].push(e);});
-  let html='';
-  for(const[date,entries]of Object.entries(grp)){
-    html+=`<div class="stitle">${date} · ${entries.length}</div>`;
-    entries.forEach(e=>{
+  // filter poppate
+  var filtLog=logCache;
+  if(logFilter==='biberon') filtLog=logCache.filter(function(e){return e.modalita==='biberon';});
+  else if(logFilter==='poppata') filtLog=logCache.filter(function(e){return e.tipo==='poppata'&&e.modalita!=='biberon';});
+  else if(logFilter==='coccola') filtLog=logCache.filter(function(e){return e.tipo==='coccola';});
+
+  // merge with pannolini only if filter is 'tutti'
+  var pannEntries = logFilter==='tutti'
+    ? pannoliniCache.map(function(e){return Object.assign({},e,{_tipo:'pann_entry'});})
+    : [];
+  var popEntries = filtLog.map(function(e){return Object.assign({},e,{_tipo:'poppata_entry'});});
+  var all=[].concat(popEntries,pannEntries).sort(function(a,b){return new Date(b.startISO||b.ts)-new Date(a.startISO||a.ts);});
+
+  var el=document.getElementById('logList');
+  if(!all.length){el.innerHTML='<div class="empty"><span class="icon">📋</span>Nessuna voce con questo filtro.</div>';return;}
+  var grp={};
+  all.forEach(function(e){
+    var dt=new Date(e.startISO||e.ts);
+    var k=dt.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
+    if(!grp[k])grp[k]=[];grp[k].push(e);
+  });
+  var html='';
+  for(var date in grp){
+    var entries=grp[date];
+    html+='<div class="stitle">'+date+' · '+entries.length+'</div>';
+    entries.forEach(function(e){
       if(e._tipo==='poppata_entry'){
-        const m=Math.floor(e.durSec/60),s=e.durSec%60;const dur=m>0?`${m}m ${s}s`:`${s}s`;
-        const sb=e.seno==='S'?'badge-s':e.seno==='D'?'badge-d':'badge-sd';
-        html+=`<div class="log-item"><div><div class="log-main">${fmtTime(new Date(e.startISO))} → ${fmtTime(new Date(e.end))}</div><div class="log-sub">${e.note||'—'}</div><div class="log-badges"><span class="log-badge ${sb}">${senoLabel(e.seno)}</span><span class="log-badge badge-${e.tipo}">${e.tipo}</span></div></div><div><div class="log-dur">${dur}</div><button class="log-del" onclick="delEntry(${e.id})">✕</button></div></div>`;
+        var m=Math.floor(e.durSec/60),s=e.durSec%60;
+        var dur=m>0?(m+'m '+s+'s'):(s+'s');
+        var isBib=e.modalita==='biberon';
+        var badge1=isBib
+          ? '<span class="log-badge" style="background:rgba(139,158,181,.15);color:var(--accent2)">Biberon</span>'
+          : '<span class="log-badge '+(e.seno==='S'?'badge-s':e.seno==='D'?'badge-d':'badge-sd')+'">'+senoLabel(e.seno)+'</span>';
+        var mlParts=[];
+        if(e.mlMaterno) mlParts.push(e.mlMaterno+'ml materno');
+        if(e.mlArtificiale) mlParts.push(e.mlArtificiale+'ml artificiale');
+        var mlLine=mlParts.length?'<div class="log-sub" style="margin-top:2px">'+mlParts.join(' + ')+'</div>':'';
+        html+='<div class="log-item">'+
+          '<div>'+
+            '<div class="log-main">'+fmtTime(new Date(e.startISO))+' → '+fmtTime(new Date(e.end))+'</div>'+
+            '<div class="log-sub">'+(e.note||'—')+'</div>'+
+            mlLine+
+            '<div class="log-badges">'+badge1+'<span class="log-badge badge-'+e.tipo+'">'+e.tipo+'</span></div>'+
+          '</div>'+
+          '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'+
+            '<div class="log-dur">'+dur+'</div>'+
+            '<button class="log-edit-btn" onclick="apriModalEntry('+e.id+')">✏️</button>'+
+            '<button class="log-del" onclick="delEntry('+e.id+')">✕</button>'+
+          '</div>'+
+        '</div>';
       } else {
-        const icon=e.tipo==='pipi'?'💧':'💩';
-        const badge=e.tipo==='pipi'?'badge-pipi':'badge-cacca';
-        let sub='';
+        var icon=e.tipo==='pipi'?'💧':'💩';
+        var badge=e.tipo==='pipi'?'badge-pipi':'badge-cacca';
+        var sub='';
         if(e.tipo==='cacca'){
-          const colInfo=COLORI.find(c=>c.id===e.colore);
+          var colInfo=COLORI.find(function(c){return c.id===e.colore;});
           sub=[e.quant,e.cons,colInfo?colInfo.label:''].filter(Boolean).join(' · ');
           if(e.note)sub+=(sub?' · ':'')+e.note;
         }
-        html+=`<div class="log-item"><div><div class="log-main">${icon} ${fmtTime(new Date(e.ts))}</div><div class="log-sub">${sub||'—'}</div><div class="log-badges"><span class="log-badge ${badge}">${e.tipo}</span></div></div><div><button class="log-del" onclick="delPann(${e.id})">✕</button></div></div>`;
+        html+='<div class="log-item">'+
+          '<div>'+
+            '<div class="log-main">'+icon+' '+fmtTime(new Date(e.ts))+'</div>'+
+            '<div class="log-sub">'+(sub||'—')+'</div>'+
+            '<div class="log-badges"><span class="log-badge '+badge+'">'+e.tipo+'</span></div>'+
+          '</div>'+
+          '<div><button class="log-del" onclick="delPann('+e.id+')">✕</button></div>'+
+        '</div>';
       }
     });
   }
   el.innerHTML=html;
 }
-window.delEntry=id=>removeEntry(id);
-window.delPann=id=>removePann(id).then(()=>toast('Eliminato'));
+window.delEntry=function(id){removeEntry(id);};
+window.delPann=function(id){removePann(id).then(function(){toast('Eliminato');});};
 
 // ── STATS ────────────────────────────────────────────
 function renderStats() {
@@ -981,7 +1346,293 @@ window.resetProfilo=()=>{if(confirm('Modificare il profilo?')){document.getEleme
 window.showPage=name=>{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.tab')[['timer','guida','log','stats','profilo'].indexOf(name)].classList.add('active');if(name==='log')renderLog();if(name==='stats')renderStats();if(name==='guida')renderGuida();if(name==='profilo')renderProfilo();};
 
 // ── EXPORT & CLEAR ────────────────────────────────────
-window.exportCSV=()=>{const rows=['Tipo,Inizio,Fine,Durata(sec),Seno,PoppTipo,Quantità,Consistenza,Colore,Note'];logCache.forEach(e=>rows.push(['poppata',e.startISO,e.end,e.durSec,e.seno,e.tipo,'','','',`"${(e.note||'').replace(/"/g,'""')}"`].join(',')));pannoliniCache.forEach(e=>rows.push([e.tipo,e.ts,'','','','',e.quant||'',e.cons||'',e.colore||'',`"${(e.note||'').replace(/"/g,'""')}"`].join(',')));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([rows.join('\n')],{type:'text/csv'}));a.download=`${profilo?.nome||'poppapp'}_${new Date().toISOString().slice(0,10)}.csv`;a.click();toast('CSV scaricato!');};
+
+// ── PDF EXPORT ────────────────────────────────────────
+window.exportPDF = function() {
+  var script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  script.onload = function() {
+    var jsPDF = window.jspdf.jsPDF;
+    var doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+    var W = 210, ml = 14, mr = 14, y = 0;
+    var col = {dark:'#0f0f14', accent:'#c8b8a2', muted:'#6b6878', text:'#1a1a1a', light:'#f0ece4'};
+
+    // ── Header bar ──────────────────────────────────
+    doc.setFillColor(15,15,20);
+    doc.rect(0, 0, W, 28, 'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(18);
+    doc.setTextColor(240,236,228);
+    doc.text('Poppapp', ml, 12);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
+    doc.setTextColor(107,104,120);
+    doc.text('diario di allattamento', ml, 18);
+    doc.setFontSize(9);
+    doc.setTextColor(200,184,162);
+    var reportDate = new Date().toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
+    doc.text('Report del ' + reportDate, W - mr, 12, {align:'right'});
+    y = 36;
+
+    // ── Bambino ──────────────────────────────────────
+    if(profilo) {
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(13);
+      doc.setTextColor(26,26,26);
+      doc.text(profilo.nome, ml, y);
+      var age = getAge();
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(9);
+      doc.setTextColor(107,104,120);
+      doc.text('Nato/a il ' + new Date(profilo.nascita+'T00:00:00').toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'}) + (age?' — '+age.label:''), ml, y+6);
+      y += 14;
+    }
+
+    // ── KPI grid ─────────────────────────────────────
+    var today = new Date().toDateString();
+    var todLog = logCache.filter(function(e){return new Date(e.startISO).toDateString()===today;});
+    var allPop = logCache.filter(function(e){return e.tipo==='poppata';});
+    var kpis = [
+      {label:'Poppate oggi', val: todLog.length+''},
+      {label:'Totale poppate', val: logCache.length+''},
+      {label:'Durata media', val: allPop.length ? Math.round(allPop.reduce(function(a,e){return a+e.durSec;},0)/allPop.length/60)+'m' : '—'},
+      {label:'Ultimo peso', val: pesoCache.length ? pesoCache[0].grammi+'g' : '—'},
+      {label:'Pipì oggi', val: pannoliniCache.filter(function(p){return new Date(p.ts).toDateString()===today&&p.tipo==='pipi';}).length+''},
+      {label:'Cacca oggi', val: pannoliniCache.filter(function(p){return new Date(p.ts).toDateString()===today&&p.tipo==='cacca';}).length+''}
+    ];
+    var kpiW = (W-ml-mr-10)/3, kpiH = 16;
+    kpis.forEach(function(k, i) {
+      var col2 = i%3, row = Math.floor(i/3);
+      var kx = ml + col2*(kpiW+5), ky = y + row*(kpiH+4);
+      doc.setFillColor(245,245,245);
+      doc.roundedRect(kx, ky, kpiW, kpiH, 2, 2, 'F');
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(12);
+      doc.setTextColor(26,26,26);
+      doc.text(k.val, kx+kpiW/2, ky+9, {align:'center'});
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(7);
+      doc.setTextColor(107,104,120);
+      doc.text(k.label, kx+kpiW/2, ky+14, {align:'center'});
+    });
+    y += kpiH*2 + 8 + 8;
+
+    // ── Log poppate (last 30) ─────────────────────────
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(10);
+    doc.setTextColor(26,26,26);
+    doc.text('Registro poppate (ultime 50)', ml, y);
+    y += 6;
+
+    // Table header
+    var cols = [{t:'Data/Ora', w:38},{t:'Fine', w:18},{t:'Durata', w:18},{t:'Modalità', w:24},{t:'Tipo', w:22},{t:'Note', w:62}];
+    var hh = 7;
+    doc.setFillColor(15,15,20);
+    doc.rect(ml, y, W-ml-mr, hh, 'F');
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(7);
+    doc.setTextColor(200,184,162);
+    var cx = ml+2;
+    cols.forEach(function(c){doc.text(c.t, cx, y+5); cx+=c.w;});
+    y += hh;
+
+    // Table rows
+    var entries = logCache.slice(0,50);
+    entries.forEach(function(e, idx) {
+      if(y > 265) {doc.addPage(); y=20;}
+      var rh = 6;
+      doc.setFillColor(idx%2===0?255:248,idx%2===0?255:248,idx%2===0?255:248);
+      doc.rect(ml, y, W-ml-mr, rh, 'F');
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(7);
+      doc.setTextColor(26,26,26);
+      var start = new Date(e.startISO), end = new Date(e.end);
+      var row = [
+        start.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'})+' '+start.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}),
+        end.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}),
+        Math.floor(e.durSec/60)+'m '+e.durSec%60+'s',
+        e.modalita==='biberon'?'Biberon':(e.seno==='S'?'Sin.':(e.seno==='D'?'Des.':'Ent.')),
+        e.tipo,
+        (e.note||'').slice(0,30)
+      ];
+      cx = ml+2;
+      cols.forEach(function(c,ci){
+        doc.text(row[ci]||'', cx, y+4.5);
+        cx+=c.w;
+      });
+      y += rh;
+    });
+
+    // ── Footer ───────────────────────────────────────
+    var pageCount = doc.internal.getNumberOfPages();
+    for(var i=1;i<=pageCount;i++){
+      doc.setPage(i);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(7);
+      doc.setTextColor(150,150,150);
+      doc.text('Generato da Poppapp — popp-app.github.io/PoppApp — pag. '+i+'/'+pageCount, W/2, 293, {align:'center'});
+    }
+
+    var nome = (profilo&&profilo.nome?profilo.nome:'poppapp').toLowerCase().replace(/\s/g,'-');
+    doc.save(nome+'_report_'+new Date().toISOString().slice(0,10)+'.pdf');
+    toast('PDF generato!');
+  };
+  document.head.appendChild(script);
+};
+
+// ── LINK REPORT WEB ───────────────────────────────────
+window.condividiLink = async function() {
+  toast('Generazione link…');
+  try {
+    var reportId = 'r_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    var reportData = {
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now()+7*24*3600*1000).toISOString(),
+      profilo: profilo,
+      log: logCache.slice(0,100),
+      kpi: {
+        totalePoppate: logCache.length,
+        ultimoPeso: pesoCache.length ? pesoCache[0] : null,
+        totalePannolini: pannoliniCache.length
+      }
+    };
+    var rDoc = doc(db, 'reports', reportId);
+    await setDoc(rDoc, reportData);
+    var baseUrl = window.location.href.split('?')[0].replace(/\/?$/, '');
+    var reportUrl = baseUrl + '?report=' + reportId;
+    if(navigator.share) {
+      await navigator.share({title:'Report '+profilo.nome, text:'Registro poppate di '+profilo.nome, url:reportUrl});
+    } else {
+      await navigator.clipboard.writeText(reportUrl);
+      toast('Link copiato! Valido 7 giorni.');
+    }
+  } catch(err) {
+    console.error(err);
+    toast('Errore generazione link');
+  }
+};
+
+// ── IMPORT CSV ────────────────────────────────────────
+var importData = [];
+window.apriModalImport = function() {
+  importData=[];
+  document.getElementById('importFile').value='';
+  document.getElementById('importPreview').style.display='none';
+  document.getElementById('importPreview').innerHTML='';
+  document.getElementById('importStatus').textContent='';
+  document.getElementById('importSaveBtn').style.display='none';
+  document.getElementById('modalImport').classList.add('open');
+};
+window.chiudiModalImport = function(){document.getElementById('modalImport').classList.remove('open');};
+
+window.leggiCSV = function(input) {
+  var file = input.files[0];
+  if(!file){return;}
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var text = ev.target.result;
+    var lines = text.split('\n').map(function(l){return l.trim();}).filter(Boolean);
+    // Find header line for poppate
+    var headerIdx = lines.findIndex(function(l){return l.toLowerCase().startsWith('tipo,modalita');});
+    if(headerIdx === -1) {
+      document.getElementById('importStatus').textContent = 'Formato non riconosciuto. Esporta prima il CSV da Poppapp.';
+      return;
+    }
+    var rows = lines.slice(headerIdx+1);
+    importData = [];
+    var skipped = 0;
+    var existingIds = new Set(logCache.map(function(e){return e.startISO;}));
+    rows.forEach(function(row) {
+      if(!row || row.startsWith('Tipo pannolino') || row.startsWith('Data,Peso')) return;
+      var parts = row.match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,)|(?<=,)$)/g) || row.split(',');
+      parts = parts.map(function(p){return p.replace(/^"|"$/g,'').replace(/""/g,'"').trim();});
+      if(parts[0]!=='poppata') return;
+      // Rebuild startISO from data + ora inizio
+      var dataIt = parts[2]||''; // dd/mm/yyyy
+      var oraS   = parts[3]||'00:00';
+      var oraE   = parts[4]||'00:10';
+      var durSec = parseInt(parts[5])||0;
+      if(!dataIt) return;
+      var dateParts = dataIt.split('/');
+      if(dateParts.length!==3) return;
+      var iso = dateParts[2]+'-'+dateParts[1].padStart(2,'0')+'-'+dateParts[0].padStart(2,'0');
+      var startISO = new Date(iso+'T'+oraS+':00').toISOString();
+      var endISO   = new Date(iso+'T'+oraE+':00').toISOString();
+      if(existingIds.has(startISO)){skipped++;return;}
+      importData.push({
+        id: Date.now()+importData.length,
+        startISO, end:endISO, durSec,
+        modalita: parts[1]||'seno',
+        seno: parts[6]||null,
+        tipo: parts[7]||'poppata',
+        mlMaterno: parseInt(parts[8])||null,
+        mlArtificiale: parseInt(parts[9])||null,
+        note: parts[10]||''
+      });
+    });
+    var prev = document.getElementById('importPreview');
+    prev.style.display = 'block';
+    prev.innerHTML = '<strong style="color:var(--text)">'+importData.length+' poppate da importare</strong>'+(skipped?' ('+skipped+' duplicate saltate)':'')+'<br><br>'+
+      importData.slice(0,8).map(function(e){
+        return new Date(e.startISO).toLocaleDateString('it-IT',{day:'numeric',month:'short'})+' '+new Date(e.startISO).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})+' — '+e.tipo;
+      }).join('<br>')+(importData.length>8?'<br>…e altre '+(importData.length-8):'');
+    document.getElementById('importSaveBtn').style.display = importData.length ? 'block' : 'none';
+    document.getElementById('importStatus').textContent = importData.length ? 'Pronto per importare.' : 'Nessuna poppata valida trovata.';
+  };
+  reader.readAsText(file, 'utf-8');
+};
+
+window.eseguiImport = async function() {
+  if(!importData.length){toast('Nessun dato da importare');return;}
+  document.getElementById('importStatus').textContent = 'Importazione in corso…';
+  document.getElementById('importSaveBtn').disabled = true;
+  var count = 0;
+  for(var i=0; i<importData.length; i++) {
+    await saveEntry(importData[i]);
+    count++;
+  }
+  chiudiModalImport();
+  toast('Importate '+count+' poppate!');
+};
+
+window.exportCSV=function(){
+  var rows=['Tipo,Modalita,Data,Ora inizio,Ora fine,Durata (sec),Seno,Tipo poppata,Latte materno (ml),Latte artificiale (ml),Note'];
+  logCache.forEach(function(e){
+    var start=new Date(e.startISO),end=new Date(e.end);
+    rows.push([
+      'poppata',
+      e.modalita||'seno',
+      start.toLocaleDateString('it-IT'),
+      start.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}),
+      end.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}),
+      e.durSec,
+      e.seno||'—',
+      e.tipo,
+      e.mlMaterno||'',
+      e.mlArtificiale||'',
+      '"'+(e.note||'').replace(/"/g,'""')+'"'
+    ].join(','));
+  });
+  rows.push('');
+  rows.push('Tipo pannolino,Data,Ora,Quantita,Consistenza,Colore,Note');
+  pannoliniCache.forEach(function(e){
+    var d=new Date(e.ts);
+    rows.push([
+      e.tipo,
+      d.toLocaleDateString('it-IT'),
+      d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}),
+      e.quant||'',e.cons||'',e.colore||'',
+      '"'+(e.note||'').replace(/"/g,'""')+'"'
+    ].join(','));
+  });
+  rows.push('');
+  rows.push('Data,Peso (g)');
+  pesoCache.forEach(function(p){rows.push([p.data,p.grammi].join(','));});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8'}));
+  a.download=(profilo&&profilo.nome?profilo.nome:'poppapp')+'_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();toast('CSV scaricato!');
+};
 window.clearAll=async()=>{if(confirm('Cancellare tutti i dati?')){for(const e of logCache)await deleteDoc(poppataDoc(e.id));for(const p of pannoliniCache)await deleteDoc(pannolDoc(p.id));for(const p of pesoCache)await deleteDoc(pesoDoc(p.id));toast('Dati cancellati');}};
 
 // ── UTILS ────────────────────────────────────────────
@@ -992,7 +1643,56 @@ window.setSeno=setSeno;window.setTipo=setTipo;window.changeWeek=changeWeek;windo
 // ── INIT ─────────────────────────────────────────────
 function initApp(){document.getElementById('app').style.display='flex';buildColoriGrid();updateHeader();renderGuidaPreview();startLogListener();}
 
+// ── REPORT VIEWER (public link) ──────────────────────
+async function checkReportMode() {
+  var params = new URLSearchParams(window.location.search);
+  var reportId = params.get('report');
+  if(!reportId) return false;
+  try {
+    var {getDoc} = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+    var rSnap = await getDoc(doc(db,'reports',reportId));
+    if(!rSnap.exists()){
+      document.getElementById('loading').innerHTML = '<div class="loading-logo">🔗</div><div class="loading-sub" style="color:var(--danger)">Report non trovato o scaduto</div>';
+      return true;
+    }
+    var r = rSnap.data();
+    if(new Date(r.expiresAt) < new Date()) {
+      document.getElementById('loading').innerHTML = '<div class="loading-logo">🔗</div><div class="loading-sub" style="color:var(--danger)">Report scaduto</div>';
+      return true;
+    }
+    // Show read-only report
+    document.getElementById('loading').style.display='none';
+    document.body.innerHTML = buildReportHTML(r);
+    return true;
+  } catch(e) { return false; }
+}
+
+function buildReportHTML(r) {
+  var p = r.profilo||{};
+  var logs = (r.log||[]).slice(0,50);
+  var rows = logs.map(function(e){
+    var start=new Date(e.startISO);
+    var m=Math.floor(e.durSec/60),s=e.durSec%60;
+    var mode=e.modalita==='biberon'?'Biberon':(e.seno==='S'?'Sinistro':(e.seno==='D'?'Destro':'Entrambi'));
+    return '<tr style="border-bottom:1px solid #222"><td style="padding:8px 6px;color:#aaa">'+
+      start.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'})+'<br><small>'+start.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})+'</small></td>'+
+      '<td style="padding:8px 6px">'+mode+'</td>'+
+      '<td style="padding:8px 6px">'+e.tipo+'</td>'+
+      '<td style="padding:8px 6px;color:#aaa">'+m+'m '+s+'s</td>'+
+      '<td style="padding:8px 6px;color:#aaa;font-size:11px">'+(e.note||'—')+'</td></tr>';
+  }).join('');
+  return '<style>body{background:#0f0f14;color:#f0ece4;font-family:monospace;padding:20px;max-width:640px;margin:0 auto}h1{font-family:Georgia,serif;font-size:24px}table{width:100%;border-collapse:collapse;font-size:12px}th{text-align:left;padding:8px 6px;color:#c8b8a2;border-bottom:1px solid #333;font-size:10px;letter-spacing:.1em;text-transform:uppercase}</style>'+
+    '<h1>'+p.nome+' 🌙</h1>'+
+    '<p style="color:#6b6878;font-size:12px">Report generato da Poppapp · '+new Date(r.createdAt).toLocaleDateString('it-IT')+'</p>'+
+    '<table><thead><tr><th>Data</th><th>Modalità</th><th>Tipo</th><th>Durata</th><th>Note</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+    '<p style="margin-top:20px;font-size:11px;color:#444">Registro di '+logs.length+' poppate · Totale: '+(r.kpi&&r.kpi.totalePoppate||'—')+
+    (r.kpi&&r.kpi.ultimoPeso?' · Ultimo peso: '+r.kpi.ultimoPeso.grammi+'g':'')+
+    ' · <a href="https://popp-app.github.io/PoppApp" style="color:#c8b8a2">Apri Poppapp</a></p>';
+}
+
 async function boot(){
+  var isReport = await checkReportMode();
+  if(isReport) return;
   const ok=await loadProfilo();
   document.getElementById('loading').style.display='none';
   if(ok)initApp();
