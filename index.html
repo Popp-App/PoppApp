@@ -8,6 +8,14 @@
 <meta name="apple-mobile-web-app-title" content="Poppapp">
 <meta name="theme-color" content="#0f0f14">
 <title>Poppapp 🌙</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R5NP2TE9Y9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-R5NP2TE9Y9');
+</script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -374,12 +382,18 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
       <div class="modal-label">Millilitri</div>
       <div class="ml-row">
         <div class="ml-input-group">
-          <div class="ml-label">🤱 Latte materno (ml)</div>
-          <input type="number" class="ml-input" id="entryMlMaterno" placeholder="—" min="0" max="500" inputmode="numeric">
+          <div class="ml-label">🤱 Latte materno</div>
+          <div style="position:relative">
+            <input type="number" class="ml-input" id="entryMlMaterno" placeholder="—" min="0" max="500" inputmode="numeric" style="padding-right:32px">
+            <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);pointer-events:none">ml</span>
+          </div>
         </div>
         <div class="ml-input-group">
-          <div class="ml-label">🥛 Artificiale (ml)</div>
-          <input type="number" class="ml-input" id="entryMlArt" placeholder="—" min="0" max="500" inputmode="numeric">
+          <div class="ml-label">🥛 Artificiale</div>
+          <div style="position:relative">
+            <input type="number" class="ml-input" id="entryMlArt" placeholder="—" min="0" max="500" inputmode="numeric" style="padding-right:32px">
+            <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);pointer-events:none">ml</span>
+          </div>
         </div>
       </div>
     </div>
@@ -458,7 +472,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 
 <div id="app">
   <header>
-    <div><div style="display:flex;align-items:center;gap:8px"><div class="brand-name" id="appBrandName">Poppapp</div><span style="font-size:10px;letter-spacing:.08em;background:rgba(200,184,162,.15);color:var(--accent);border:1px solid rgba(200,184,162,.3);padding:2px 7px;border-radius:20px;font-family:'DM Mono',monospace">v0.6.0</span></div><div class="brand-sub">diario di allattamento</div></div>
+    <div><div style="display:flex;align-items:center;gap:8px"><div class="brand-name" id="appBrandName">Poppapp</div><span style="font-size:10px;letter-spacing:.08em;background:rgba(200,184,162,.15);color:var(--accent);border:1px solid rgba(200,184,162,.3);padding:2px 7px;border-radius:20px;font-family:'DM Mono',monospace">v0.6.3</span></div><div class="brand-sub">diario di allattamento</div></div>
     <div class="hdr-right">
       <div><span class="age-pill" id="agePill">—</span></div>
       <div style="margin-top:4px">oggi <strong id="countToday">0</strong> · ultima <strong id="lastTime">—</strong></div>
@@ -487,8 +501,8 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
         <span class="toggle-slider"></span>
       </label>
       <div class="mode-switch-label">
-        <div style="text-align:right"><strong>Biberon</strong><br><span style="font-size:10px">passa alla modalità</span></div>
-        <span>🍼</span>
+        <div style="text-align:right"><strong id="modeAltLabel">Biberon</strong><br><span style="font-size:10px">passa alla modalità</span></div>
+        <span id="modeAltIcon">🍼</span>
       </div>
     </div>
     <div class="timer-card">
@@ -507,12 +521,18 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
       <div class="biberon-ml" id="biberonMl">
         <div class="ml-row">
           <div class="ml-input-group">
-            <div class="ml-label">🤱 Latte materno (ml)</div>
-            <input type="number" class="ml-input" id="mlMaterno" placeholder="—" min="0" max="500" inputmode="numeric">
+            <div class="ml-label">🤱 Latte materno</div>
+            <div style="position:relative">
+              <input type="number" class="ml-input" id="mlMaterno" placeholder="—" min="0" max="500" inputmode="numeric" style="padding-right:32px">
+              <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);pointer-events:none">ml</span>
+            </div>
           </div>
           <div class="ml-input-group">
-            <div class="ml-label">🥛 Latte artificiale (ml)</div>
-            <input type="number" class="ml-input" id="mlArtificiale" placeholder="—" min="0" max="500" inputmode="numeric">
+            <div class="ml-label">🥛 Latte artificiale</div>
+            <div style="position:relative">
+              <input type="number" class="ml-input" id="mlArtificiale" placeholder="—" min="0" max="500" inputmode="numeric" style="padding-right:32px">
+              <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--muted);pointer-events:none">ml</span>
+            </div>
           </div>
         </div>
       </div>
@@ -754,6 +774,7 @@ function updatePannoliniCard(){
 window.addPipi=async function(delta){
   if(delta>0){
     const p={id:Date.now(),tipo:'pipi',ts:new Date().toISOString()};
+    if(typeof gtag!=='undefined') gtag('event','pannolino_salvato',{tipo:'pipi'});
     await savePann(p);toast('💧 Pipì registrata');
   } else {
     const list=todayPann().filter(p=>p.tipo==='pipi');
@@ -844,6 +865,9 @@ function toggleMode(){
   document.getElementById('biberonMl').classList.toggle('active', isBiberon);
   document.getElementById('modeIcon').textContent    = isBiberon ? '🍼' : '🤱';
   document.getElementById('modeLabel').textContent   = isBiberon ? 'Biberon' : 'Seno';
+  document.getElementById('modeAltIcon').textContent = isBiberon ? '🤱' : '🍼';
+  document.getElementById('modeAltLabel').textContent= isBiberon ? 'Seno' : 'Biberon';
+  if(typeof gtag!=='undefined') gtag('event','modalita_cambiata',{modalita: curMode});
 }
 window.toggleMode = toggleMode;
 function setSeno(s){curSeno=s;['S','D','SD'].forEach(v=>document.getElementById('btn-'+v).classList.toggle('active',v===s));if(isRunning)document.getElementById('infoSeno').textContent=senoLabel(s);}
@@ -890,6 +914,14 @@ async function stopTimer(){
     ? ('Biberon' + (mlM?(' '+mlM+'ml M'):'') + (mlA?(' '+mlA+'ml A'):''))
     : senoLabel(curSeno);
   toast('Salvata! '+Math.floor(sec/60)+'m '+sec%60+'s · '+label);
+  if(typeof gtag!=='undefined') gtag('event','poppata_salvata',{
+    modalita: curMode,
+    tipo: curTipo,
+    seno: isBiberon?null:curSeno,
+    durata_min: Math.round(sec/60),
+    ml_materno: mlM||0,
+    ml_artificiale: mlA||0
+  });
 }
 function tickTimer(){const tot=elapsedMs+(Date.now()-startTime);const s=Math.floor(tot/1000),m=Math.floor(s/60);document.getElementById('timerDisplay').textContent=String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
 
@@ -1037,6 +1069,10 @@ window.salvaEntry=async function(){
   await saveEntry(entry);
   chiudiModalEntry();
   toast(existId?'Poppata modificata!':'Poppata aggiunta!');
+  if(typeof gtag!=='undefined') gtag('event', existId?'poppata_modificata':'poppata_manuale',{
+    modalita: entryMode,
+    tipo: entryTipo
+  });
 };
 window.apriModalPeso=function(){
   const today=new Date().toISOString().slice(0,10);
@@ -1056,6 +1092,7 @@ window.salvaPeso=async function(){
   await setDoc(pesoDoc(entry.id),entry);
   chiudiModalPeso();
   toast(`Peso salvato: ${g} g`);
+  if(typeof gtag!=='undefined') gtag('event','peso_salvato',{grammi:g});
 };
 window.delPeso=async function(id){
   if(confirm('Eliminare questa pesata?')){setSyncing();await deleteDoc(pesoDoc(id));toast('Eliminata');}
@@ -1343,7 +1380,8 @@ window.salvaOnboarding=async()=>{const nome=document.getElementById('ob-nome').v
 window.resetProfilo=()=>{if(confirm('Modificare il profilo?')){document.getElementById('app').style.display='none';document.getElementById('ob-nome').value=profilo?.nome||'';obSex=profilo?.sesso||'';document.getElementById('sex-f').classList.toggle('active',obSex==='f');document.getElementById('sex-m').classList.toggle('active',obSex==='m');document.getElementById('ob-data').value=profilo?.nascita||'';document.getElementById('onboarding').style.display='flex';}};
 
 // ── NAV ──────────────────────────────────────────────
-window.showPage=name=>{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.tab')[['timer','guida','log','stats','profilo'].indexOf(name)].classList.add('active');if(name==='log')renderLog();if(name==='stats')renderStats();if(name==='guida')renderGuida();if(name==='profilo')renderProfilo();};
+window.showPage=name=>{
+  if(typeof gtag!=='undefined') gtag('event','tab_view',{tab_name:name});document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('page-'+name).classList.add('active');document.querySelectorAll('.tab')[['timer','guida','log','stats','profilo'].indexOf(name)].classList.add('active');if(name==='log')renderLog();if(name==='stats')renderStats();if(name==='guida')renderGuida();if(name==='profilo')renderProfilo();};
 
 // ── EXPORT & CLEAR ────────────────────────────────────
 
@@ -1476,6 +1514,7 @@ window.exportPDF = function() {
     var nome = (profilo&&profilo.nome?profilo.nome:'poppapp').toLowerCase().replace(/\s/g,'-');
     doc.save(nome+'_report_'+new Date().toISOString().slice(0,10)+'.pdf');
     toast('PDF generato!');
+    if(typeof gtag!=='undefined') gtag('event','export',{formato:'pdf',poppate:logCache.length});
   };
   document.head.appendChild(script);
 };
@@ -1505,6 +1544,7 @@ window.condividiLink = async function() {
     } else {
       await navigator.clipboard.writeText(reportUrl);
       toast('Link copiato! Valido 7 giorni.');
+    if(typeof gtag!=='undefined') gtag('event','export',{formato:'link'});
     }
   } catch(err) {
     console.error(err);
@@ -1632,6 +1672,7 @@ window.exportCSV=function(){
   a.href=URL.createObjectURL(new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8'}));
   a.download=(profilo&&profilo.nome?profilo.nome:'poppapp')+'_'+new Date().toISOString().slice(0,10)+'.csv';
   a.click();toast('CSV scaricato!');
+  if(typeof gtag!=='undefined') gtag('event','export',{formato:'csv',poppate:logCache.length});
 };
 window.clearAll=async()=>{if(confirm('Cancellare tutti i dati?')){for(const e of logCache)await deleteDoc(poppataDoc(e.id));for(const p of pannoliniCache)await deleteDoc(pannolDoc(p.id));for(const p of pesoCache)await deleteDoc(pesoDoc(p.id));toast('Dati cancellati');}};
 
@@ -1641,7 +1682,27 @@ window.startTimer=startTimer;window.pauseTimer=pauseTimer;window.resumeTimer=res
 window.setSeno=setSeno;window.setTipo=setTipo;window.changeWeek=changeWeek;window.toggleSec=toggleSec;
 
 // ── INIT ─────────────────────────────────────────────
-function initApp(){document.getElementById('app').style.display='flex';buildColoriGrid();updateHeader();renderGuidaPreview();startLogListener();}
+function initApp(){
+  document.getElementById('app').style.display='flex';
+  buildColoriGrid();updateHeader();renderGuidaPreview();startLogListener();
+  // Track app open with user context
+  if(typeof gtag!=='undefined'){
+    var age=getAge();
+    gtag('event','app_aperta',{
+      eta_settimane: age?age.weeks:null,
+      poppate_totali: logCache.length
+    });
+    // Daily engagement: ping once per day
+    var today=new Date().toDateString();
+    var lastPing=localStorage.getItem('poppapp_last_ping');
+    if(lastPing!==today){
+      localStorage.setItem('poppapp_last_ping',today);
+      gtag('event','sessione_giornaliera',{
+        giorno_della_settimana: new Date().toLocaleDateString('it-IT',{weekday:'long'})
+      });
+    }
+  }
+}
 
 // ── REPORT VIEWER (public link) ──────────────────────
 async function checkReportMode() {
