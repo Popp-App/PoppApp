@@ -178,6 +178,46 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 #modalEntry.open{display:flex}
 .modal-sheet-tall{background:var(--surface);border-radius:20px 20px 0 0;padding:20px 18px 28px;width:100%;max-width:480px;display:flex;flex-direction:column;gap:12px;max-height:90vh;overflow-y:auto}
 .modal-2col{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* ── TIMER ALERT ─────────────────────────────────────── */
+#timerAlert{position:fixed;top:calc(var(--safe-top) + 70px);left:50%;transform:translateX(-50%) translateY(-20px);
+  background:var(--surface);border:1px solid rgba(224,112,112,.4);color:var(--text);
+  padding:12px 18px;border-radius:16px;font-size:13px;opacity:0;
+  transition:all .4s;pointer-events:none;z-index:300;white-space:nowrap;
+  box-shadow:0 4px 24px rgba(0,0,0,.4)}
+#timerAlert.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+#timerAlert button{background:none;border:none;color:var(--accent);font-family:'DM Mono',monospace;
+  font-size:12px;cursor:pointer;margin-left:12px;letter-spacing:.04em}
+
+/* ── FEEDBACK MODAL ──────────────────────────────────── */
+#modalFeedback{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;
+  display:none;align-items:flex-end;justify-content:center;padding-bottom:var(--safe-bot)}
+#modalFeedback.open{display:flex}
+.feedback-q{font-family:'DM Serif Display',serif;font-size:17px;text-align:center;line-height:1.4}
+.feedback-sub{font-size:12px;color:var(--muted);text-align:center;line-height:1.6}
+.feedback-textarea{width:100%;background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:12px;color:var(--text);font-family:'DM Mono',monospace;
+  font-size:13px;resize:none;height:100px;outline:none}
+.feedback-textarea::placeholder{color:var(--muted)}
+.feedback-skip{background:none;border:none;color:var(--muted);font-family:'DM Mono',monospace;
+  font-size:12px;cursor:pointer;text-align:center;width:100%;padding:8px;letter-spacing:.06em}
+
+/* ── STREAK & BADGE ──────────────────────────────────── */
+.streak-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px;display:flex;align-items:center;gap:16px}
+.streak-flame{font-size:36px;flex-shrink:0}
+.streak-info{flex:1}
+.streak-num{font-size:32px;font-weight:300;line-height:1;color:var(--text)}
+.streak-label{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+.streak-best{font-size:11px;color:var(--muted);margin-top:4px}
+.badges-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.badge-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:14px 10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;
+  transition:all .2s}
+.badge-card.locked{opacity:.35}
+.badge-card .badge-icon{font-size:28px}
+.badge-card .badge-name{font-size:11px;color:var(--text);letter-spacing:.04em}
+.badge-card .badge-desc{font-size:10px;color:var(--muted);line-height:1.4}
 /* ── PESO CARD ───────────────────────────────────────── */
 /* ── DISCLAIMER CARD ─────────────────────────────────── */
 
@@ -472,7 +512,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
 
 <div id="app">
   <header>
-    <div><div style="display:flex;align-items:center;gap:8px"><div class="brand-name" id="appBrandName">Poppapp</div><span style="font-size:10px;letter-spacing:.08em;background:rgba(200,184,162,.15);color:var(--accent);border:1px solid rgba(200,184,162,.3);padding:2px 7px;border-radius:20px;font-family:'DM Mono',monospace">v0.6.3</span></div><div class="brand-sub">diario di allattamento</div></div>
+    <div><div style="display:flex;align-items:center;gap:8px"><div class="brand-name" id="appBrandName">Poppapp</div><span style="font-size:10px;letter-spacing:.08em;background:rgba(200,184,162,.15);color:var(--accent);border:1px solid rgba(200,184,162,.3);padding:2px 7px;border-radius:20px;font-family:'DM Mono',monospace">v0.7.0</span></div><div class="brand-sub">diario di allattamento</div></div>
     <div class="hdr-right">
       <div><span class="age-pill" id="agePill">—</span></div>
       <div style="margin-top:4px">oggi <strong id="countToday">0</strong> · ultima <strong id="lastTime">—</strong></div>
@@ -656,6 +696,12 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
   <div class="page" id="page-profilo">
     <div class="stitle">Il tuo bambino</div>
     <div class="profile-card" id="profileCard"></div>
+    <div class="stitle">🔥 Streak</div>
+    <div class="streak-card" id="streakCard"></div>
+    <div class="stitle">🏅 Badge</div>
+    <div class="badges-grid" id="badgesGrid"></div>
+    <div class="stitle">💬 Feedback</div>
+    <button class="btn-sec" onclick="apriFeedback('manuale')" style="color:var(--accent2);border-color:rgba(139,158,181,.3)">💬 Invia un feedback</button>
     <div class="stitle">Impostazioni</div>
     <button class="btn-sec" onclick="resetProfilo()">✏️ Modifica profilo</button>
     <button class="btn-sec" style="color:var(--danger);border-color:rgba(224,112,112,.3)" onclick="clearAll()">🗑 Cancella tutti i dati</button>
@@ -679,6 +725,16 @@ header{display:flex;align-items:center;justify-content:space-between;padding:12p
     <button class="modal-cancel" onclick="chiudiModalImport()">Annulla</button>
   </div>
 </div>
+<div id="modalFeedback">
+  <div class="modal-sheet-tall">
+    <div class="feedback-q" id="feedbackQ">Come sta andando con Poppapp?</div>
+    <div class="feedback-sub" id="feedbackSub">Il tuo feedback ci aiuta a migliorare l'app per tutte le famiglie.</div>
+    <textarea class="feedback-textarea" id="feedbackText" placeholder="Scrivi liberamente — cosa funziona bene? Cosa miglioreresti?"></textarea>
+    <button class="modal-save" onclick="inviaFeedback()">Invia feedback</button>
+    <button class="feedback-skip" onclick="chiudiFeedback(true)">Salta per ora</button>
+  </div>
+</div>
+<div id="timerAlert">⏱ Poppata lunga — tutto ok? <button onclick="stopTimer()">Chiudi timer</button></div>
 <div id="toast"></div>
 
 <script type="module">
@@ -696,6 +752,7 @@ const pannoliniRef=()=>collection(db,'profili',DID,'pannolini');
 const poppataDoc=id=>doc(db,'profili',DID,'poppate',String(id));
 const pannolDoc=id=>doc(db,'profili',DID,'pannolini',String(id));
 const pesoRef=()=>collection(db,'profili',DID,'pesi');
+const feedbackRef=()=>collection(db,'feedback');
 const pesoDoc=id=>doc(db,'profili',DID,'pesi',String(id));
 
 let profilo=null,logCache=[],pannoliniCache=[],pesoCache=[],unsubLog=null,unsubPann=null,unsubPeso=null;
@@ -716,6 +773,8 @@ function startLogListener(){
     logCache=snap.docs.map(d=>d.data());setSyncOk();updateHeader();
     const ap=document.querySelector('.page.active')?.id;
     if(ap==='page-log')renderLog();if(ap==='page-stats')renderStats();
+    if(ap==='page-profilo')renderStreakAndBadges();
+    checkFeedbackTrigger();
   },e=>setSyncErr());
   if(unsubPann)unsubPann();
   unsubPann=onSnapshot(query(pannoliniRef(),orderBy('ts','desc')),snap=>{
@@ -901,6 +960,7 @@ async function stopTimer(){
     note:document.getElementById('noteField').value.trim()
   };
   document.getElementById('timerDisplay').textContent='00:00';
+  document.getElementById('timerAlert').classList.remove('show');
   document.getElementById('timerDisplay').className='timer-display';
   document.getElementById('timerLabel').textContent='pronta per iniziare';
   document.getElementById('sessionInfo').style.display='none';
@@ -923,10 +983,97 @@ async function stopTimer(){
     ml_artificiale: mlA||0
   });
 }
-function tickTimer(){const tot=elapsedMs+(Date.now()-startTime);const s=Math.floor(tot/1000),m=Math.floor(s/60);document.getElementById('timerDisplay').textContent=String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function tickTimer(){
+  const tot=elapsedMs+(Date.now()-startTime);
+  const s=Math.floor(tot/1000),m=Math.floor(s/60);
+  document.getElementById('timerDisplay').textContent=String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+  // Alert at 30 min, vibrate on supported devices
+  const alert30=document.getElementById('timerAlert');
+  if(m===30 && s===0){
+    alert30.classList.add('show');
+    if(navigator.vibrate) navigator.vibrate([300,100,300]);
+  } else if(m<30){
+    alert30.classList.remove('show');
+  }
+}
 
 // ── GUIDA ────────────────────────────────────────────
 
+
+// ── FEEDBACK ──────────────────────────────────────────
+var feedbackContext = '';
+var feedbackShown = {};
+
+function apriFeedback(ctx){
+  feedbackContext = ctx;
+  var questions = {
+    'prima_settimana': {
+      q: 'Prima settimana completata!',
+      sub: 'Come ti trovi con Poppapp? Cosa cambieresti?'
+    },
+    'dieci_poppate': {
+      q: 'Hai registrato 10 poppate!',
+      sub: 'Stai usando Poppapp come ti aspettavi? Cosa manca?'
+    },
+    'primo_mese': {
+      q: 'Un mese insieme!',
+      sub: 'Come ti sei trovata finora? Cosa ti ha aiutato di piu?'
+    },
+    'manuale': {
+      q: 'Il tuo feedback conta',
+      sub: 'Cosa funziona bene? Cosa miglioreresti? Qualsiasi cosa, anche piccola.'
+    }
+  };
+  var data = questions[ctx] || questions['manuale'];
+  document.getElementById('feedbackQ').textContent = data.q;
+  document.getElementById('feedbackSub').textContent = data.sub;
+  document.getElementById('feedbackText').value = '';
+  document.getElementById('modalFeedback').classList.add('open');
+}
+
+window.apriFeedback = apriFeedback;
+
+window.chiudiFeedback = function(skip){
+  document.getElementById('modalFeedback').classList.remove('open');
+  if(skip) localStorage.setItem('fb_skip_'+feedbackContext, '1');
+};
+
+window.inviaFeedback = async function(){
+  var text = document.getElementById('feedbackText').value.trim();
+  if(!text){toast('Scrivi qualcosa prima di inviare');return;}
+  try{
+    await setDoc(doc(db,'feedback',DID+'_'+Date.now()),{
+      deviceId: DID,
+      context: feedbackContext,
+      text,
+      ts: new Date().toISOString(),
+      nomeBambino: profilo?profilo.nome:'',
+      poppate: logCache.length
+    });
+    if(typeof gtag!=='undefined') gtag('event','feedback_inviato',{context:feedbackContext});
+    chiudiFeedback(false);
+    toast('Grazie! Il tuo feedback è prezioso 🙏');
+  }catch(e){toast('Errore invio. Riprova.');}
+};
+
+// Check if should prompt feedback at key moments
+function checkFeedbackTrigger(){
+  var n = logCache.length;
+  var age = getAge();
+  var triggers = [
+    {ctx:'dieci_poppate', cond: n===10},
+    {ctx:'prima_settimana', cond: age&&age.days===7},
+    {ctx:'primo_mese', cond: age&&age.days===30}
+  ];
+  for(var i=0;i<triggers.length;i++){
+    var t=triggers[i];
+    if(t.cond && !localStorage.getItem('fb_skip_'+t.ctx) && !localStorage.getItem('fb_done_'+t.ctx)){
+      setTimeout(function(c){apriFeedback(c);}(t.ctx), 2000);
+      localStorage.setItem('fb_done_'+t.ctx,'1');
+      break;
+    }
+  }
+}
 // ── PESO ─────────────────────────────────────────────
 function renderPesoCard(){
   if(!pesoCache.length){
@@ -1367,8 +1514,93 @@ function renderStats() {
   }
 }
 
+
+// ── STREAK & BADGES ───────────────────────────────────
+function calcStreak(){
+  if(!logCache.length) return {current:0, best:0};
+  var days = [...new Set(logCache.map(function(e){
+    return new Date(e.startISO).toDateString();
+  }))].sort(function(a,b){return new Date(b)-new Date(a);});
+  var streak=0, best=0, cur=0;
+  var prev=null;
+  for(var i=0;i<days.length;i++){
+    var d=new Date(days[i]);
+    if(!prev){cur=1;}
+    else{
+      var diff=Math.round((prev-d)/86400000);
+      if(diff===1) cur++;
+      else cur=1;
+    }
+    best=Math.max(best,cur);
+    prev=d;
+  }
+  // Check if streak is still active (last day was today or yesterday)
+  var lastDay=new Date(days[0]);
+  var today=new Date(); today.setHours(0,0,0,0);
+  var diff=Math.round((today-lastDay)/86400000);
+  streak = diff<=1 ? cur : 0;
+  return {current:streak, best:best};
+}
+
+const BADGES_DEF = [
+  {id:'prima_poppata', icon:'🌱', name:'Prima poppata', desc:'Hai registrato la prima poppata', cond:function(l,p){ return l.length>=1; }},
+  {id:'dieci_poppate', icon:'🍼', name:'10 poppate', desc:'Dieci poppate registrate', cond:function(l){ return l.length>=10; }},
+  {id:'cinquanta', icon:'⭐', name:'50 poppate', desc:'Cinquanta poppate registrate', cond:function(l){ return l.length>=50; }},
+  {id:'cento', icon:'💫', name:'100 poppate', desc:'Cento poppate registrate', cond:function(l){ return l.length>=100; }},
+  {id:'streak3', icon:'🔥', name:'3 giorni', desc:'Streak di 3 giorni consecutivi', cond:function(l){ return calcStreak().best>=3; }},
+  {id:'streak7', icon:'🌟', name:'Settimana', desc:'Sette giorni consecutivi', cond:function(l){ return calcStreak().best>=7; }},
+  {id:'peso', icon:'⚖️', name:'Prima pesata', desc:'Hai registrato il peso', cond:function(l){ return pesoCache.length>=1; }},
+  {id:'biberon', icon:'🍶', name:'Biberon', desc:'Hai usato la modalità biberon', cond:function(l){ return l.some(function(e){return e.modalita==='biberon';}); }},
+  {id:'pannolino', icon:'💧', name:'Pannolini', desc:'Hai registrato 10 pannolini', cond:function(l){ return pannoliniCache.length>=10; }},
+];
+
+function renderStreakAndBadges(){
+  // Streak
+  var s = calcStreak();
+  var sc = document.getElementById('streakCard');
+  if(sc) sc.innerHTML =
+    '<div class="streak-flame">'+(s.current>0?'🔥':'😴')+'</div>'+
+    '<div class="streak-info">'+
+      '<div class="streak-num">'+s.current+'</div>'+
+      '<div class="streak-label">giorni consecutivi</div>'+
+      '<div class="streak-best">Miglior streak: '+s.best+' giorni</div>'+
+    '</div>';
+
+  // Badges
+  var bg = document.getElementById('badgesGrid');
+  if(!bg) return;
+  bg.innerHTML = BADGES_DEF.map(function(b){
+    var unlocked = b.cond(logCache);
+    return '<div class="badge-card'+(unlocked?'':' locked')+'">'+
+      '<div class="badge-icon">'+b.icon+'</div>'+
+      '<div class="badge-name">'+b.name+'</div>'+
+      '<div class="badge-desc">'+b.desc+'</div>'+
+    '</div>';
+  }).join('');
+
+  // Check if new badge just unlocked — notify once
+  BADGES_DEF.forEach(function(b){
+    if(b.cond(logCache) && !localStorage.getItem('badge_notified_'+b.id)){
+      localStorage.setItem('badge_notified_'+b.id,'1');
+      setTimeout(function(){toast('🏅 Badge sbloccato: '+b.name);},500);
+      if(typeof gtag!=='undefined') gtag('event','badge_sbloccato',{badge:b.id});
+    }
+  });
+}
 // ── PROFILO ──────────────────────────────────────────
-function renderProfilo(){if(!profilo)return;const birth=getBirth();const age=getAge();const emoji=profilo.sesso==='f'?'👧':'👦';document.getElementById('profileCard').innerHTML=`<div class="profile-avatar">${emoji}</div><div class="profile-name">${profilo.nome}</div><div class="profile-row">Data di nascita <span>${birth.toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'})}</span></div><div class="profile-row">Sesso <span>${profilo.sesso==='f'?'Femmina 👧':'Maschio 👦'}</span></div><div class="profile-row">Età <span>${age?age.label:'—'}</span></div><div class="profile-row">Poppate totali <span>${logCache.length}</span></div><div class="profile-row">Pannolini totali <span>${pannoliniCache.length}</span></div>`;}
+function renderProfilo(){
+  if(!profilo) return;
+  const birth=getBirth();const age=getAge();const emoji=profilo.sesso==='f'?'👧':'👦';
+  document.getElementById('profileCard').innerHTML=
+    '<div class="profile-avatar">'+emoji+'</div>'+
+    '<div class="profile-name">'+profilo.nome+'</div>'+
+    '<div class="profile-row">Data di nascita <span>'+birth.toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'})+'</span></div>'+
+    '<div class="profile-row">Sesso <span>'+(profilo.sesso==='f'?'Femmina 👧':'Maschio 👦')+'</span></div>'+
+    '<div class="profile-row">Età <span>'+(age?age.label:'—')+'</span></div>'+
+    '<div class="profile-row">Poppate totali <span>'+logCache.length+'</span></div>'+
+    '<div class="profile-row">Pannolini totali <span>'+pannoliniCache.length+'</span></div>';
+  renderStreakAndBadges();
+}
 
 // ── HEADER ───────────────────────────────────────────
 function updateHeader(){const age=getAge();if(age)document.getElementById('agePill').textContent=age.label;if(profilo)document.getElementById('appBrandName').textContent=profilo.nome+' 🌙';const today=new Date().toDateString();document.getElementById('countToday').textContent=logCache.filter(e=>new Date(e.startISO).toDateString()===today).length;document.getElementById('lastTime').textContent=logCache.length?fmtTime(new Date(logCache[0].end)):'—';}
